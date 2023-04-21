@@ -1,7 +1,12 @@
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import {bootstrapApplication} from '@angular/platform-browser'
+import {AppComponent} from './app/app.component'
+import {provideRouter} from '@angular/router'
 
-import { AppModule } from './app/app.module';
+import ROOT_ROUTES from "./app/app.routes"
 
-
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+// noinspection JSIgnoredPromiseFromCall
+bootstrapApplication(AppComponent, {
+    providers: [
+        provideRouter(ROOT_ROUTES)
+    ]
+})
