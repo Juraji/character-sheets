@@ -7,11 +7,12 @@ import {RouterLinkActive} from '@angular/router'
 })
 export class AriaRouterLinkCurrentDirective {
 
-    constructor(@Host() private rla: RouterLinkActive) {
+    public constructor(@Host() private rla: RouterLinkActive) {
     }
 
-    @HostBinding("attr.aria-current") get ariaCurrent() {
-        return this.rla.isActive ? "page" : undefined;
+    @HostBinding('attr.aria-current')
+    public get ariaCurrent() {
+        return this.rla.isActive ? 'page' : undefined;
     }
 
 }

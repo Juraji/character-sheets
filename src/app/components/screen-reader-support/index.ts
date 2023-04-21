@@ -1,1 +1,1 @@
-export * from "./aria-router-link-current.directive"
+export * from './aria-router-link-current.directive'

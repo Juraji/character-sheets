@@ -3,6 +3,11 @@
   "ignorePatterns": [
     "projects/**/*"
   ],
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
+  },
   "overrides": [
     {
       "files": [
@@ -32,22 +37,15 @@
             "prefix": "app",
             "style": "kebab-case"
           }
-        ]
-      }
-    },
-    {
-      "files": [
-        "*.html"
-      ],
-      "extends": [
-        "plugin:@angular-eslint/template/recommended"
-      ],
-      "rules": {
+        ],
+        "quotes": ["error", "single"],
+        "no-extra-boolean-cast": "off",
         "import/no-unresolved": "off",
+        "@typescript-eslint/explicit-member-accessibility": "error",
         "sort-imports": [
           "error",
           {
-            "ignoreCase": false,
+            "ignoreCase": true,
             "ignoreDeclarationSort": true,
             "ignoreMemberSort": false,
             "memberSyntaxSortOrder": [
@@ -81,6 +79,14 @@
           }
         ]
       }
+    },
+    {
+      "files": [
+        "*.html"
+      ],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended"
+      ]
     }
   ]
 }

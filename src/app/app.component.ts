@@ -1,7 +1,8 @@
+import {NgForOf} from '@angular/common'
 import {Component} from '@angular/core';
 import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router'
-import {NgForOf} from '@angular/common'
-import {AriaRouterLinkCurrentDirective} from './components/screen-reader-support'
+
+import {AriaRouterLinkCurrentDirective} from '@components/screen-reader-support'
 
 interface MenuItem {
     label: string,
@@ -22,14 +23,14 @@ interface MenuItem {
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-    readonly menuItems: MenuItem[] = [
+    public readonly menuItems: MenuItem[] = [
         {
-            label: "Home",
-            route: "/home"
+            label: 'Home',
+            route: '/home'
         },
         {
-            label: "Characters",
-            route: "/characters"
+            label: 'Characters',
+            route: '/characters'
         },
     ]
 }

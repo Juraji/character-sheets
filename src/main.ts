@@ -1,12 +1,16 @@
 import {bootstrapApplication} from '@angular/platform-browser'
-import {AppComponent} from './app/app.component'
 import {provideRouter} from '@angular/router'
 
-import ROOT_ROUTES from "./app/app.routes"
+import {DatabaseService} from '@core/db'
+
+import {AppComponent} from './app/app.component'
+import ROOT_ROUTES from './app/app.routes'
+
 
 // noinspection JSIgnoredPromiseFromCall
 bootstrapApplication(AppComponent, {
     providers: [
-        provideRouter(ROOT_ROUTES)
+        provideRouter(ROOT_ROUTES),
+        {provide: DatabaseService, useClass: DatabaseService},
     ]
 })
