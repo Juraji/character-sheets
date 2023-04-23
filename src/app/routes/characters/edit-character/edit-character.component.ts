@@ -74,7 +74,8 @@ export class EditCharacterComponent implements OnInit, OnDestroy {
 
         this.store.characterId$
             .pipe(takeUntilDestroyed(this), filterNotNull())
-            .subscribe(id => this.router.navigate(['..', id], {relativeTo: this.activatedRoute}))
+            .subscribe(id => this.router.navigate(['..', id],
+                {relativeTo: this.activatedRoute, replaceUrl: true}))
     }
 
     public ngOnDestroy() {

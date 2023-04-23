@@ -2,12 +2,14 @@ import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {RouterLink} from '@angular/router'
 
+import {CardComponent} from '@components/card'
+
 import {CharactersOverviewStore} from './characters-overview.store'
 
 @Component({
     selector: 'app-characters-overview',
     standalone: true,
-    imports: [CommonModule, RouterLink],
+    imports: [CommonModule, RouterLink, CardComponent],
     providers: [CharactersOverviewStore],
     templateUrl: './characters-overview.component.html',
     styleUrls: ['./characters-overview.component.scss'],

@@ -2,9 +2,12 @@
   <form [formGroup]="formGroup" (submit)="onFormSubmit()" *ngIf="editorActive$ | async; else viewTpl">
     <app-card [title]="pageTitle$ | async">
       <button type="button" (click)="editorActive$.disable()" [disabled]="store.characterIsNew$ | async"
-              class="btn btn-outline-danger" data-card-btn>Cancel
+              class="btn btn-outline-danger" data-card-btn>
+        <i class="bi bi-x-lg"></i>
       </button>
-      <button type="submit" class="btn btn-primary" data-card-btn>Save</button>
+      <button type="submit" class="btn btn-primary" data-card-btn>
+        <i class="bi bi-save"></i>
+      </button>
 
       <div class="row">
         <div class="col-sm-6">
@@ -91,7 +94,8 @@
   <ng-template #viewTpl>
     <app-card [title]="pageTitle$ | async">
       <button type="button" (click)="editorActive$.enable()"
-              class="btn btn-secondary" data-card-btn>Edit
+              class="btn btn-secondary" data-card-btn>
+        <i class="bi bi-pencil-fill"></i>
       </button>
 
       <div class="row" *ngIf="store.character$ | async as char">
