@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import PouchDB from 'pouchdb'
 import PouchDBFindPlugin from 'pouchdb-find'
-import {catchError, from, interval, map, mergeMap, Observable, pipe, throwError, UnaryFunction} from 'rxjs'
+import {catchError, filter, from, fromEvent, map, mergeMap, Observable, pipe, throwError, UnaryFunction} from 'rxjs'
 import {v4 as uuidV4} from 'uuid'
 
 import {Model, ModelType} from '@core/db/model'
@@ -19,12 +19,15 @@ export class DatabaseService implements OnDestroy {
         PouchDB.plugin(PouchDBFindPlugin)
         this.pouchDb = new PouchDB(DATABASE_NAME);
 
-        interval(DB_COMPACT_INTERVAL)
+        this.pouchDb.compact({
+            interval: DB_COMPACT_INTERVAL
+        })
+
+        fromEvent(window, 'beforeunload')
             .pipe(takeUntilDestroyed(this))
-            .subscribe(() => {
-                this.pouchDb.compact()
-                this.pouchDb.viewCleanup()
-            })
+            .subscribe(() => this.pouchDb.close())
+
+        this.registerIndex<Model>('idx_model_model_type', ['modelType']).subscribe()
     }
 
     public ngOnDestroy() {
@@ -77,6 +80,25 @@ export class DatabaseService implements OnDestroy {
             this.handlePouchDbResponse(),
             map(r => ({_id: r.id, _rev: r.rev}))
         )
+    }
+
+    public registerIndex<T extends Model, K = keyof T>(
+        name: string,
+        fields: K[],
+        documentSelector?: PouchDB.Find.Selector
+    ) {
+        // noinspection JSVoidFunctionReturnValueUsed
+        return from(this.pouchDb.getIndexes())
+            .pipe(
+                filter(res => !res.indexes.some(idx => idx.name === name)),
+                mergeMap(() => from(this.pouchDb.createIndex({
+                    index: {
+                        name,
+                        fields: fields as string[],
+                        partial_filter_selector: documentSelector,
+                    }
+                })))
+            )
     }
 
     public readonly catchNotFound = <T>(defaultValue: Nullable<T> = null) => pipe<Observable<T>, Observable<Nullable<T>>>(

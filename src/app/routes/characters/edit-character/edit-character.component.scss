@@ -1,6 +1,8 @@
 :host {
   .img-sheet-image {
     width: 100%;
-    object-fit: contain;
+    max-height: 55rem;
+    object-fit: cover;
+    object-position: top;
   }
 }

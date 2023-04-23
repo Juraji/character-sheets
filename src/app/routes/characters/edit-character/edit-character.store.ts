@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core'
 import {EntityState} from '@ngrx/entity'
 import {map, mergeMap, Observable, pairwise, startWith, takeUntil, tap, withLatestFrom} from 'rxjs'
 
-import {Character, CharacterAbility, CharacterTrait, ModelType, SHEET_IMAGE_ATTACHMENT} from '@core/db/model'
+import {Character, CharacterAbility, CharacterTrait, ModelType, SHEET_IMAGE_ATTACHMENT_ID} from '@core/db/model'
 import {AppComponentStore} from '@core/ngrx'
 import {filterNotEmpty, filterNotNull, firstNotNull} from '@core/rxjs'
 import {objectOmit} from '@core/util/objects'
@@ -113,13 +113,13 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
 
     public readonly updateSheetImage: (f: Blob) => void = this.effect<Blob>($ => $.pipe(
         withLatestFrom(this.characterId$.pipe(filterNotNull()), this.characterRev$.pipe(filterNotNull())),
-        mergeMap(([f, docId, rev]) => this.db.putAttachment(docId, rev, SHEET_IMAGE_ATTACHMENT, f.type, f)),
+        mergeMap(([f, docId, rev]) => this.db.putAttachment(docId, rev, SHEET_IMAGE_ATTACHMENT_ID, f.type, f)),
         tap(({_id, _rev, content}) => this.patchState({_id, _rev, sheetImage: content})),
     ))
 
     public readonly removeSheetImage: () => void = this.effect<void>($ => $.pipe(
         withLatestFrom(this.characterId$.pipe(filterNotNull()), this.characterRev$.pipe(filterNotNull())),
-        mergeMap(([_, docId, rev]) => this.db.removeAttachment(docId, rev, SHEET_IMAGE_ATTACHMENT)),
+        mergeMap(([_, docId, rev]) => this.db.removeAttachment(docId, rev, SHEET_IMAGE_ATTACHMENT_ID)),
         tap(model => this.patchState({...model, sheetImage: null}))
     ))
 

@@ -32,4 +32,4 @@ export interface CharacterAbility extends CharacterTrait {
     magicResistance: number
 }
 
-export const SHEET_IMAGE_ATTACHMENT = 'sheetImage'
+export const SHEET_IMAGE_ATTACHMENT_ID = 'sheetImage'
