@@ -1,5 +1,13 @@
+@import "src/styles/variables-import";
+
 :host {
+  display: block;
+
   ::ng-deep .card-buttons [data-card-btn] {
     margin-left: .5rem;
+  }
+
+  ::ng-deep [data-card-title] {
+    margin-bottom: var(--#{$prefix}card-title-spacer-y);
   }
 }

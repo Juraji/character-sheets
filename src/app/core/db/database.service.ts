@@ -32,7 +32,7 @@ export class DatabaseService {
     }
 
     public save<T extends Model>(doc: T): Observable<T> {
-        const updateCandidate: T = doc._id === ''
+        const updateCandidate: T = !doc._id || doc._id === ''
             ? {...doc, _id: uuidV4(), _rev: undefined}
             : doc
 

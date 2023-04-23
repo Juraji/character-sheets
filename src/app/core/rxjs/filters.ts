@@ -10,6 +10,6 @@ export const filterNotNull: <T>() => UnaryFunction<Observable<T>, Observable<Non
 /**
  * Filter NULL, undefined or empty arrays or strings
  */
-export const filterNotEmpty: <T, U extends T[] | string>() => UnaryFunction<Observable<U>, Observable<NonNullable<U>>> = () => pipe(
-    filter(o => o !== null && o !== undefined && o.length > 0)
+export const filterNotEmpty: <T, U extends T[] | string>() => UnaryFunction<Observable<U>, Observable<U>> = () => pipe(
+    filter(o => o.length > 0)
 );

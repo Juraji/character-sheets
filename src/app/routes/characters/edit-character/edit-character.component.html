@@ -1,11 +1,12 @@
 <div class="container">
   <form [formGroup]="formGroup" (submit)="onFormSubmit()" *ngIf="editorActive$ | async; else viewTpl">
-    <app-card [title]="pageTitle$ | async">
+    <app-card>
+      <h2 class="card-title" data-card-title=""><span class="text-muted">Character: </span>{{store.name$ | async}}</h2>
       <button type="button" (click)="editorActive$.disable()" [disabled]="store.characterIsNew$ | async"
               class="btn btn-outline-danger" data-card-btn>
         <i class="bi bi-x-lg"></i>
       </button>
-      <button type="submit" class="btn btn-primary" data-card-btn>
+      <button type="submit" class="btn btn-primary" data-card-btn [disabled]="formGroup.invalid">
         <i class="bi bi-save"></i>
       </button>
 
@@ -88,24 +89,187 @@
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-sm-6" formArrayName="abilities">
+          <div class="d-flex justify-content-between pb-0">
+            <h6>Abilities</h6>
+            <div class="d-flex">
+              <button type="button" class="btn btn-sm btn-outline-primary" (click)="onAddAbilityTrait()">
+                <i class="bi bi-plus-lg"></i>
+              </button>
+            </div>
+          </div>
+          <span *ngIf="abilitiesFormArray.length === 0" class="text-muted">No abilities defined yet.</span>
+          <app-card class="mt-3 shadow-sm" *ngFor="let i of abilitiesFormArray.length | arrayIndexSeq"
+                    [formGroupName]="i">
+            <h4 data-card-title="">Trait</h4>
+            <button type="button" class="btn btn-sm btn-outline-danger" data-card-btn (click)="onRemoveAbilityTrait(i)">
+              <i class="bi bi-x-lg"></i>
+            </button>
+
+            <div class="mb-3">
+              <label [for]="'abilityTLabelraitInput-' + i" class="form-label">Label</label>
+              <input class="form-control" [id]="'abilityTLabelraitInput-' + i"
+                     [attr.aria-describedby]="'abilityTraitLabelInputHelp-' + i"
+                     formControlName="label">
+              <div [id]="'abilityTraitLabelInputHelp-' + i" class="form-text">A short name for this trait.</div>
+            </div>
+            <div class="mb-3">
+              <label [for]="'abilityTraitDescriptionInput-' + i" class="form-label">Description</label>
+              <input class="form-control" [id]="'abilityTraitDescriptionInput-' + i"
+                     [attr.aria-describedby]="'abilityTraitDescriptionInputHelp-' + i"
+                     formControlName="description">
+              <div [id]="'abilityTraitDescriptionInputHelp-' + i" class="form-text">Describe this trait more
+                explicitly.
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-6">
+                <label [for]="'abilityTraitHitDieInput-' + i" class="form-label">Hit Die</label>
+                <input class="form-control" [id]="'abilityTraitHitDieInput-' + i"
+                       [attr.aria-describedby]="'abilityTraitHitDieInputHelp-' + i"
+                       formControlName="hitDie" type="number">
+                <div [id]="'abilityTraitHitDieInputHelp-' + i" class="form-text">What die should be used to generate a
+                  hit?
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <label [for]="'abilityTraitBaseDamageInput-' + i" class="form-label">Base Damage</label>
+                <input class="form-control" [id]="'abilityTraitBaseDamageInput-' + i"
+                       [attr.aria-describedby]="'abilityTraitBaseDamageInputHelp-' + i"
+                       formControlName="baseDamage" type="number">
+                <div [id]="'abilityTraitBaseDamageInputHelp-' + i" class="form-text">How much damage does this ability
+                  inflict without buffs or effects.
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <label [for]="'abilityTraitShieldBufInput-' + i" class="form-label">Shield Buff</label>
+                <input class="form-control" [id]="'abilityTraitShieldBufInput-' + i"
+                       [attr.aria-describedby]="'abilityTraitShieldBufInputHelp-' + i"
+                       formControlName="shieldBuf" type="number">
+                <div [id]="'abilityTraitShieldBufInputHelp-' + i" class="form-text">How much shield buff does this
+                  ability
+                  generate?
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <label [for]="'abilityTraitMagicResistanceInput-' + i" class="form-label">Magic Resistance</label>
+                <input class="form-control" [id]="'abilityTraitMagicResistanceInput-' + i"
+                       [attr.aria-describedby]="'abilityTraitMagicResistanceInputHelp-' + i"
+                       formControlName="magicResistance" type="number">
+                <div [id]="'abilityTraitMagicResistanceInputHelp-' + i" class="form-text">How much magic resistance does
+                  this ability have?
+                </div>
+              </div>
+            </div>
+          </app-card>
+        </div>
+        <div class="col-sm-6" formArrayName="personality">
+          <div class="d-flex justify-content-between pb-0">
+            <h6>Personality Traits</h6>
+            <div class="d-flex">
+              <button type="button" class="btn btn-sm btn-outline-primary" (click)="onAddPersonalityTrait()">
+                <i class="bi bi-plus-lg"></i>
+              </button>
+            </div>
+          </div>
+          <span *ngIf="personalityFormArray.length === 0" class="text-muted">No personality traits defined yet.</span>
+          <app-card class="mt-3 shadow-sm" *ngFor="let i of personalityFormArray.length | arrayIndexSeq"
+                    [formGroupName]="i">
+            <h4 data-card-title="">Trait</h4>
+            <button type="button" class="btn btn-sm btn-outline-danger" data-card-btn
+                    (click)="onRemovePersonalityTrait(i)">
+              <i class="bi bi-x-lg"></i>
+            </button>
+
+            <div class="mb-3">
+              <label [for]="'personalityTraitLabelInput-' + i" class="form-label">Label</label>
+              <input class="form-control" [id]="'personalityTraitLabelInput-' + i"
+                     [attr.aria-describedby]="'personalityTraitLabelInputHelp-' + i"
+                     formControlName="label">
+              <div [id]="'personalityTraitLabelInputHelp-' + i" class="form-text">A short name for this trait.</div>
+            </div>
+            <div>
+              <label [for]="'personalityTraitDescriptionInput-' + i" class="form-label">Description</label>
+              <input class="form-control" [id]="'personalityTraitDescriptionInput-' + i"
+                     [attr.aria-describedby]="'personalityTraitDescriptionInputHelp-' + i"
+                     formControlName="description">
+              <div [id]="'personalityTraitDescriptionInputHelp-' + i" class="form-text">Describe this trait more
+                explicitly.
+              </div>
+            </div>
+          </app-card>
+        </div>
+      </div>
     </app-card>
   </form>
 
   <ng-template #viewTpl>
-    <app-card [title]="pageTitle$ | async">
+    <app-card>
+      <h2 class="card-title" data-card-title=""><span class="text-muted">Character: </span>{{store.name$ | async}}</h2>
       <button type="button" (click)="editorActive$.enable()"
               class="btn btn-secondary" data-card-btn>
         <i class="bi bi-pencil-fill"></i>
       </button>
 
-      <div class="row" *ngIf="store.character$ | async as char">
+      <div class="row mb-3">
         <div class="col-sm-6">
-          <app-read-only-field inline label="Age">{{char.age}}</app-read-only-field>
-          <app-read-only-field inline label="Species">{{char.species}}</app-read-only-field>
-          <app-read-only-field inline label="Combat Class">{{char.combatClass}}</app-read-only-field>
+          <app-card class="mb-3">
+            <h4 data-card-title="">Info</h4>
+            <app-read-only-field inline label="Age">{{store.age$ | async}}</app-read-only-field>
+            <app-read-only-field inline label="Species">{{store.species$ | async}}</app-read-only-field>
+            <app-read-only-field inline label="Combat Class">{{store.combatClass$ | async}}</app-read-only-field>
+          </app-card>
+          <app-card class="mb-3">
+            <h4 data-card-title="">Abilities</h4>
+            <span *ngIf="store.abilities$ | async | not"
+                  class="text-muted">No abilities defined yet.</span>
+            <ul>
+              <li *ngFor="let t of store.abilities$ | async">
+                <ul class="list-unstyled">
+                  <li>{{t.label}}</li>
+                  <li *ngIf="t.description as desc" class="text-muted">{{desc}}</li>
+                  <li>
+                    <app-read-only-field inline label="Hit Die">d{{t.hitDie}}</app-read-only-field>
+                  </li>
+                  <li [ngTemplateOutlet]="coloredStat"
+                      [ngTemplateOutletContext]="{label: 'Base Damage', stat: t.baseDamage}"></li>
+                  <li [ngTemplateOutlet]="coloredStat"
+                      [ngTemplateOutletContext]="{label: 'Shield Buff', stat: t.shieldBuf}"></li>
+                  <li [ngTemplateOutlet]="coloredStat"
+                      [ngTemplateOutletContext]="{label: 'Magic Resistance', stat: t.magicResistance}"></li>
+                </ul>
+              </li>
+            </ul>
+
+            <ng-template #coloredStat let-label="label" let-stat="stat">
+              <app-read-only-field inline [label]="label">
+                <span [class.text-muted]="stat === 0" [class.text-danger]="stat < 0"
+                      [class.text-success]="stat > 0">{{stat}}</span>
+              </app-read-only-field>
+            </ng-template>
+          </app-card>
         </div>
         <div class="col-sm-6">
-          <app-read-only-field *ngIf="!!char.bio" label="Bio">{{char.bio}}</app-read-only-field>
+          <app-card *ngIf="store.bio$ | async as bio" class="mb-3">
+            <h4 data-card-title="">Bio</h4>
+            <p>{{bio}}</p>
+          </app-card>
+          <app-card class="mb-3">
+            <h4 data-card-title="">Personality traits</h4>
+            <span *ngIf="store.personalityTraits$ | async | not"
+                  class="text-muted">No personality traits defined yet.</span>
+            <ul>
+              <li *ngFor="let t of store.personalityTraits$ | async">
+                <ul class="list-unstyled">
+                  <li>{{t.label}}</li>
+                  <li *ngIf="t.description as desc" class="text-muted">{{desc}}</li>
+                </ul>
+              </li>
+            </ul>
+          </app-card>
         </div>
       </div>
     </app-card>

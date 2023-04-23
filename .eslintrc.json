@@ -44,7 +44,6 @@
         ],
         "@angular-eslint/no-empty-lifecycle-method": "off",
         "no-extra-boolean-cast": "off",
-        "import/no-unresolved": "off",
         "@typescript-eslint/no-empty-function": "off",
         "@typescript-eslint/explicit-member-accessibility": [
           "error",

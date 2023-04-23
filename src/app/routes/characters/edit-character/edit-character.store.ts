@@ -2,19 +2,23 @@ import {Injectable} from '@angular/core'
 import {EntityState} from '@ngrx/entity'
 import {map, mergeMap, Observable, takeUntil, tap, withLatestFrom} from 'rxjs'
 
-import {Character, CharacterAbility, CharacterTrait, ModelFormOf} from '@core/db/model'
+import {Character, CharacterAbility, CharacterTrait} from '@core/db/model'
 import {AppComponentStore} from '@core/ngrx'
-import {filterNotNull} from '@core/rxjs'
+import {filterNotEmpty, filterNotNull} from '@core/rxjs'
+import {objectOmit} from '@core/util/objects'
 import {strSort} from '@core/util/sorters'
 
-interface EditCharacterStoreState {
-    character: Character | null,
+export type StoreCharacter = NullableProperties<Omit<Character, 'personality' | 'abilities'>>
+export type FormCharacter = NullableProperties<Omit<Character, '_id' | '_rev' | 'modelType'>>
+
+interface EditCharacterStoreState extends StoreCharacter {
     personality: EntityState<CharacterTrait>
     abilities: EntityState<CharacterAbility>
 }
 
-export interface EditCharacterStoreData {
-    character: Character
+export interface EditCharacterStoreData extends StoreCharacter {
+    personality: CharacterTrait[]
+    abilities: CharacterAbility[]
 }
 
 @Injectable()
@@ -26,9 +30,28 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
     private readonly abilityAdapter = this.createCustomIdEntityAdapter<CharacterAbility>(e => e.label, strSort(e => e.label))
     private readonly abilitySelectors = this.abilityAdapter.getSelectors()
 
-    public readonly characterId$: Observable<string | undefined> = this.select(s => s.character?._id)
+    public readonly characterId$: Observable<string | null> = this.select(s => s._id)
+    public readonly characterRev$: Observable<string | null> = this.select(s => s._rev)
     public readonly characterIsNew$: Observable<boolean> = this.characterId$.pipe(map(id => !id))
-    public readonly character$: Observable<Character> = this.select(s => s.character).pipe(filterNotNull())
+
+    public readonly age$: Observable<number> = this
+        .select(s => s.age)
+        .pipe(filterNotNull())
+    public readonly bio$: Observable<string> = this
+        .select(s => s.bio)
+        .pipe(filterNotNull(), filterNotEmpty())
+    public readonly combatClass$: Observable<string> = this
+        .select(s => s.combatClass)
+        .pipe(filterNotNull(), filterNotEmpty())
+    public readonly name$: Observable<string> = this
+        .select(s => s.name)
+        .pipe(filterNotNull(), filterNotEmpty())
+    public readonly species$: Observable<string> = this
+        .select(s => s.species)
+        .pipe(filterNotNull(), filterNotEmpty())
+
+    public readonly character$: Observable<StoreCharacter> = this
+        .select(s => objectOmit(s, 'personality', 'abilities'))
 
     public readonly personalityTraits$: Observable<CharacterTrait[]> = this
         .select(s => s.personality)
@@ -42,7 +65,14 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
         super()
 
         this.setState({
-            character: null,
+            _id: null,
+            _rev: null,
+            age: null,
+            bio: null,
+            combatClass: null,
+            modelType: 'CHARACTER',
+            name: null,
+            species: null,
             personality: this.traitAdapter.getInitialState(),
             abilities: this.abilityAdapter.getInitialState()
         })
@@ -52,22 +82,19 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
             .subscribe(sd => this.setStoreData(sd))
     }
 
-    public readonly save: (patch: ModelFormOf<Character>) => void = this.effect<ModelFormOf<Character>>($ => $.pipe(
-        withLatestFrom(this.character$),
-        map(([patch, character]) => ({...character, ...patch}) as Character),
+    public readonly save: (patch: FormCharacter) => void = this.effect<FormCharacter>($ => $.pipe(
+        withLatestFrom(this.characterId$, this.characterRev$),
+        map(([patch, _id, _rev]) =>
+            ({...patch, _id, _rev, modelType: 'CHARACTER'}) as Character),
         mergeMap(patch => this.db.save(patch)),
-        tap(res => this.patchState(s => ({
-            character: res,
-            personality: this.traitAdapter.setAll(res.personality, s.personality),
-            abilities: this.abilityAdapter.setAll(res.abilities, s.abilities)
-        })))
-    ))
+        tap(character => this.setStoreData(character)))
+    )
 
-    private setStoreData(sd: EditCharacterStoreData) {
+    private setStoreData({personality, abilities, ...rest}: EditCharacterStoreData) {
         this.patchState(s => ({
-            character: sd.character,
-            personality: this.traitAdapter.setAll(sd.character.personality, s.personality),
-            abilities: this.abilityAdapter.setAll(sd.character.abilities, s.abilities)
+            ...rest,
+            personality: this.traitAdapter.setAll(personality, s.personality),
+            abilities: this.abilityAdapter.setAll(abilities, s.abilities)
         }))
     }
 }

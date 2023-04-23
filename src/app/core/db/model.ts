@@ -8,11 +8,6 @@ export interface Model extends PouchDBCore.IdMeta, PouchDBCore.RevisionIdMeta {
     modelType: ModelType
 }
 
-export type ModelPropertiesOf<T extends Model> = Omit<T, '_id' | '_rev' | 'modelType'>
-export type ModelFormOf<T extends Model, M = ModelPropertiesOf<T>> = {
-    [P in keyof M]: M[P] | null;
-}
-
 // Characters
 export interface Character extends Model {
     modelType: 'CHARACTER'
@@ -31,7 +26,8 @@ export interface CharacterTrait {
 }
 
 export interface CharacterAbility extends CharacterTrait {
-    damage: number
+    hitDie: number
+    baseDamage: number
     shieldBuf: number
     magicResistance: number
 }

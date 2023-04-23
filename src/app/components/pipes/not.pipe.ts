@@ -7,7 +7,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 export class NotPipe implements PipeTransform {
 
     public transform(value: unknown): boolean {
-        return !value;
+        return !value || (typeof value === 'object' && 'length' in value && value.length === 0);
     }
 
 }

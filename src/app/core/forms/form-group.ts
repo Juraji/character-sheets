@@ -1,7 +1,7 @@
 import {AbstractControl, FormGroup} from '@angular/forms'
 import {Observable} from 'rxjs';
 
-type AbstractControlMapOf<T> = { [K in keyof T]: AbstractControl<T[K]> }
+type AbstractControlMapOf<T> = { [K in keyof T]: AbstractControl<T[K] | null> }
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /**

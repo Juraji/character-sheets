@@ -3,17 +3,17 @@ import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/co
 import {FormArray, FormControl, ReactiveFormsModule, Validators} from '@angular/forms'
 import {ActivatedRoute, Router} from '@angular/router'
 import {BsDropdownModule} from 'ngx-bootstrap/dropdown'
-import {map, Observable, startWith} from 'rxjs'
+import {map, mergeMap, tap} from 'rxjs'
 
 import {CardComponent} from '@components/card'
-import {NotPipe} from '@components/pipes'
+import {ArrayIndexSeqPipe, NotPipe} from '@components/pipes'
 import {ReadOnlyFieldComponent} from '@components/read-only-field/read-only-field.component'
-import {Character, ModelFormOf} from '@core/db/model'
+import {CharacterAbility, CharacterTrait} from '@core/db/model'
 import {ModelFormGroup} from '@core/forms'
-import {filterNotEmpty, filterNotNull, takeUntilDestroyed} from '@core/rxjs'
+import {filterNotNull, takeUntilDestroyed} from '@core/rxjs'
 import {BoolBehaviourSubject} from '@core/rxjs/bool-behaviour-subject'
 
-import {EditCharacterStore} from './edit-character.store'
+import {EditCharacterStore, FormCharacter} from './edit-character.store'
 
 const DEFAULT_COMBAT_CLASSES: string[] = [
     'Artificer', 'Barbarian', 'Bard', 'Blood Hunter', 'Cleric', 'Druid', 'Fighter',
@@ -27,7 +27,7 @@ const DEFAULT_SPECIES: string[] = [
 @Component({
     selector: 'app-edit-character',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, CardComponent, NotPipe, BsDropdownModule, ReadOnlyFieldComponent],
+    imports: [CommonModule, ReactiveFormsModule, CardComponent, NotPipe, BsDropdownModule, ReadOnlyFieldComponent, ArrayIndexSeqPipe],
     providers: [EditCharacterStore],
     templateUrl: './edit-character.component.html',
     styleUrls: ['./edit-character.component.scss'],
@@ -40,13 +40,7 @@ export class EditCharacterComponent implements OnInit, OnDestroy {
     public readonly defaultCombatClasses = DEFAULT_COMBAT_CLASSES
     public readonly defaultSpecies = DEFAULT_SPECIES
 
-    public readonly pageTitle$: Observable<string> = this.store.character$.pipe(
-        map(c => `Character: ${c.name}`),
-        filterNotEmpty(),
-        startWith('New Character')
-    )
-
-    public readonly formGroup = new ModelFormGroup<ModelFormOf<Character>>({
+    public readonly formGroup = new ModelFormGroup<FormCharacter>({
         name: new FormControl('', [Validators.required]),
         bio: new FormControl(''),
         age: new FormControl(100, [Validators.required, Validators.min(1)]),
@@ -55,6 +49,14 @@ export class EditCharacterComponent implements OnInit, OnDestroy {
         personality: new FormArray([]),
         abilities: new FormArray([])
     })
+
+    public get personalityFormArray(): FormArray<ModelFormGroup<CharacterTrait>> {
+        return this.formGroup.get('personality') as FormArray<ModelFormGroup<CharacterTrait>>
+    }
+
+    public get abilitiesFormArray(): FormArray<ModelFormGroup<CharacterAbility>> {
+        return this.formGroup.get('abilities') as FormArray<ModelFormGroup<CharacterAbility>>
+    }
 
     constructor(
         private readonly router: Router,
@@ -67,6 +69,24 @@ export class EditCharacterComponent implements OnInit, OnDestroy {
         this.store.character$
             .pipe(takeUntilDestroyed(this))
             .subscribe(c => this.formGroup.patchValue(c))
+
+        this.store.personalityTraits$
+            .pipe(
+                takeUntilDestroyed(this),
+                tap(() => this.personalityFormArray.clear()),
+                mergeMap(traits => traits),
+                map(t => this.createCharacterTraitForm(t))
+            )
+            .subscribe(f => this.personalityFormArray.push(f))
+
+        this.store.abilities$
+            .pipe(
+                takeUntilDestroyed(this),
+                tap(() => this.abilitiesFormArray.clear()),
+                mergeMap(traits => traits),
+                map(t => this.createCharacterAbilityForm(t))
+            )
+            .subscribe(f => this.abilitiesFormArray.push(f))
 
         this.store.characterIsNew$
             .pipe(takeUntilDestroyed(this))
@@ -103,5 +123,39 @@ export class EditCharacterComponent implements OnInit, OnDestroy {
         this.editorActive$.disable()
 
         this.store.save(patch)
+    }
+
+    public onAddPersonalityTrait() {
+        this.personalityFormArray.push(this.createCharacterTraitForm())
+    }
+
+    public onRemovePersonalityTrait(idx: number) {
+        this.personalityFormArray.removeAt(idx)
+    }
+
+    public onAddAbilityTrait() {
+        this.abilitiesFormArray.push(this.createCharacterAbilityForm())
+    }
+
+    public onRemoveAbilityTrait(idx: number) {
+        this.abilitiesFormArray.removeAt(idx)
+    }
+
+    private createCharacterTraitForm(trait?: CharacterTrait): ModelFormGroup<CharacterTrait> {
+        return new ModelFormGroup<CharacterTrait>({
+            label: new FormControl(trait?.label || null, [Validators.required]),
+            description: new FormControl(trait?.description || '')
+        })
+    }
+
+    private createCharacterAbilityForm(ability?: CharacterAbility) {
+        return new ModelFormGroup<CharacterAbility>({
+            label: new FormControl(ability?.label || null, [Validators.required]),
+            description: new FormControl(ability?.description || ''),
+            hitDie: new FormControl(ability?.hitDie || 8, [Validators.required, Validators.min(2)]),
+            baseDamage: new FormControl(ability?.baseDamage || 10, [Validators.required]),
+            shieldBuf: new FormControl(ability?.shieldBuf || 0, [Validators.required]),
+            magicResistance: new FormControl(ability?.magicResistance || 0, [Validators.required]),
+        })
     }
 }
