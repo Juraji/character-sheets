@@ -2,11 +2,11 @@ import {Routes} from '@angular/router'
 
 export default [
     {
-        path: 'home',
-        loadChildren: () => import('./home/home.routes')
+        path: 'characters',
+        loadChildren: () => import('./routes/characters/characters.routes')
     },
     {
         path: '**',
-        redirectTo: 'home'
+        redirectTo: 'characters'
     }
 ] as Routes

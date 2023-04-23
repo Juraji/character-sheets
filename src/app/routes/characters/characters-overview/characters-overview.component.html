@@ -1,0 +1,9 @@
+<div class="container">
+  <h1>Character Overview</h1>
+
+  <pre *ngFor="let char of store.characters$ | async">{{char | json}}</pre>
+</div>
+
+<button class="add-character-btn btn btn-primary shadow-sm" routerLink="../edit/new">
+  Add character
+</button>

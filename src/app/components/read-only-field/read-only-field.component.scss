@@ -1,0 +1,15 @@
+:host {
+  display: block;
+
+  &[inline] {
+    display: flex;
+
+    .field-label {
+      margin-right: .5rem;
+      &:after {
+        display: inline-block;
+        content: ': '
+      }
+    }
+  }
+}

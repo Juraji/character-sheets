@@ -1,0 +1,109 @@
+<div class="container">
+  <form [formGroup]="formGroup" (submit)="onFormSubmit()" *ngIf="editorActive$ | async; else viewTpl">
+    <app-card [title]="pageTitle$ | async">
+      <button type="button" (click)="editorActive$.disable()" [disabled]="store.characterIsNew$ | async"
+              class="btn btn-outline-danger" data-card-btn>Cancel
+      </button>
+      <button type="submit" class="btn btn-primary" data-card-btn>Save</button>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="mb-3">
+            <label for="characterNameInput" class="form-label">Name</label>
+            <input class="form-control" id="characterNameInput" aria-describedby="characterNameInputHelp"
+                   formControlName="name">
+            <div id="characterNameInputHelp" class="form-text">A catchy name for your character.</div>
+          </div>
+          <div class="mb-3">
+            <label for="characterAgeInput" class="form-label">Age</label>
+            <input class="form-control" type="number" id="characterAgeInput" aria-describedby="characterDobInputHelp"
+                   formControlName="age">
+            <div id="characterAgeInputHelp" class="form-text">It's just a number.</div>
+          </div>
+          <div class="mb-3">
+            <label for="characterSpeciesInput" class="form-label">Species</label>
+            <div class="input-group">
+              <input class="form-control" id="characterSpeciesInput"
+                     aria-describedby="characterSpeciesInputHelp"
+                     formControlName="species">
+              <div class="btn-group" dropdown>
+                <button class="btn btn-secondary dropdown-toggle" dropdownToggle
+                        aria-controls="characterSpeciesInputDefaultsMenu"
+                        type="button">
+                  Default&nbsp;<span class="caret"></span>
+                </button>
+                <ul id="characterSpeciesInputDefaultsMenu" *dropdownMenu class="dropdown-menu"
+                    role="menu" aria-labelledby="button-basic">
+                  <li class="disabled"><a class="dropdown-item disabled">
+                    Select using left-click or<br/>
+                    use right-click to append.
+                  </a></li>
+                  <li role="menuitem" *ngFor="let s of defaultSpecies">
+                    <a class="dropdown-item" (click)="onUseSpecies(s)"
+                       (contextmenu)="$event.preventDefault();onUseSpecies(s, true)">{{s}}</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div id="characterSpeciesInputHelp" class="form-text">Characters have a species or at least a race.</div>
+          </div>
+          <div class="mb-3">
+            <label for="characterCombatClassInput" class="form-label">Combat Class</label>
+            <div class="input-group">
+              <input class="form-control" id="characterCombatClassInput"
+                     aria-describedby="characterCombatClassInputHelp"
+                     formControlName="combatClass">
+              <div class="btn-group" dropdown>
+                <button class="btn btn-secondary dropdown-toggle" dropdownToggle
+                        aria-controls="characterCombatClassInputDefaultsMenu"
+                        type="button">
+                  Default&nbsp;<span class="caret"></span>
+                </button>
+                <ul id="characterCombatClassInputDefaultsMenu" *dropdownMenu class="dropdown-menu"
+                    role="menu" aria-labelledby="button-basic">
+                  <li class="disabled"><a class="dropdown-item disabled">
+                    Select using left-click or<br/>
+                    use right-click to append.
+                  </a></li>
+                  <li role="menuitem" *ngFor="let cl of defaultCombatClasses">
+                    <a class="dropdown-item" (click)="onUseCombatClass(cl)"
+                       (contextmenu)="$event.preventDefault();onUseCombatClass(cl, true)">{{cl}}</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div id="characterCombatClassInputHelp" class="form-text">Which combat style would this character prefer?
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="mb-3">
+            <label for="characterBioInput" class="form-label">Bio</label>
+            <textarea rows="15" id="characterBioInput" class="form-control" aria-describedby="characterBioInputHelp"
+                      formControlName="bio"></textarea>
+            <div id="characterBioInputHelp" class="form-text">How did your character come to be?</div>
+          </div>
+        </div>
+      </div>
+    </app-card>
+  </form>
+
+  <ng-template #viewTpl>
+    <app-card [title]="pageTitle$ | async">
+      <button type="button" (click)="editorActive$.enable()"
+              class="btn btn-secondary" data-card-btn>Edit
+      </button>
+
+      <div class="row" *ngIf="store.character$ | async as char">
+        <div class="col-sm-6">
+          <app-read-only-field inline label="Age">{{char.age}}</app-read-only-field>
+          <app-read-only-field inline label="Species">{{char.species}}</app-read-only-field>
+          <app-read-only-field inline label="Combat Class">{{char.combatClass}}</app-read-only-field>
+        </div>
+        <div class="col-sm-6">
+          <app-read-only-field *ngIf="!!char.bio" label="Bio">{{char.bio}}</app-read-only-field>
+        </div>
+      </div>
+    </app-card>
+  </ng-template>
+</div>

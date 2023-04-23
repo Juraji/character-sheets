@@ -38,10 +38,22 @@
             "style": "kebab-case"
           }
         ],
-        "quotes": ["error", "single"],
+        "quotes": [
+          "error",
+          "single"
+        ],
+        "@angular-eslint/no-empty-lifecycle-method": "off",
         "no-extra-boolean-cast": "off",
         "import/no-unresolved": "off",
-        "@typescript-eslint/explicit-member-accessibility": "error",
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/explicit-member-accessibility": [
+          "error",
+          {
+            "overrides": {
+              "constructors": "no-public"
+            }
+          }
+        ],
         "sort-imports": [
           "error",
           {

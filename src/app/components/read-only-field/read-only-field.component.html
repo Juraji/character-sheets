@@ -1,0 +1,4 @@
+<label [for]="id + '-contents'" class="field-label text-muted" *ngIf="!!label">{{label}}</label>
+<div class="field-contents" [id]="id + '-contents'">
+  <ng-content></ng-content>
+</div>

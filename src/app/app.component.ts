@@ -1,4 +1,4 @@
-import {NgForOf} from '@angular/common'
+import {CommonModule} from '@angular/common'
 import {Component} from '@angular/core';
 import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router'
 
@@ -14,20 +14,16 @@ interface MenuItem {
     standalone: true,
     templateUrl: './app.component.html',
     imports: [
-        RouterOutlet,
-        NgForOf,
+        CommonModule,
+        AriaRouterLinkCurrentDirective,
         RouterLink,
         RouterLinkActive,
-        AriaRouterLinkCurrentDirective
+        RouterOutlet
     ],
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
     public readonly menuItems: MenuItem[] = [
-        {
-            label: 'Home',
-            route: '/home'
-        },
         {
             label: 'Characters',
             route: '/characters'

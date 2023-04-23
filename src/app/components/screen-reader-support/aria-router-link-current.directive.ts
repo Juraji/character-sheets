@@ -7,7 +7,7 @@ import {RouterLinkActive} from '@angular/router'
 })
 export class AriaRouterLinkCurrentDirective {
 
-    public constructor(@Host() private rla: RouterLinkActive) {
+    constructor(@Host() private rla: RouterLinkActive) {
     }
 
     @HostBinding('attr.aria-current')
