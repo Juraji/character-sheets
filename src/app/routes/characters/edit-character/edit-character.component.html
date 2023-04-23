@@ -3,11 +3,15 @@
     <app-card>
       <h2 class="card-title" data-card-title=""><span class="text-muted">Character: </span>{{store.name$ | async}}</h2>
       <button type="button" (click)="editorActive$.disable()" [disabled]="store.characterIsNew$ | async"
-              class="btn btn-outline-danger" data-card-btn>
-        <i class="bi bi-x-lg"></i>
+              class="btn btn-secondary" data-card-btn>
+        <i class="bi bi-x-lg"></i> Cancel
       </button>
+      <app-two-factor-button btnColor="btn-danger" (confirmed)="onDelete()" confirmText="Yes, delete this character!"
+                             data-card-btn="">
+        <i class="bi bi-trash"></i> Delete
+      </app-two-factor-button>
       <button type="submit" class="btn btn-primary" data-card-btn [disabled]="formGroup.invalid">
-        <i class="bi bi-save"></i>
+        <i class="bi bi-save"></i> Save
       </button>
 
       <div class="row">
@@ -81,6 +85,19 @@
           </div>
         </div>
         <div class="col-sm-6">
+          <div class="mb-3" *ngIf="store.characterIsNew$ | async | not">
+            <label for="characterImageInput" class="form-label">Sheet Image</label>
+            <div class="input-group">
+              <input type="file" id="characterImageInput" class="form-control" accept="image/*"
+                     (change)="onSetSheetImage($event)"/>
+              <app-two-factor-button
+                *ngIf="store.sheetImage$ | async"
+                (confirmed)="onRemoveSheetImage()"
+                confirmText="Yes, remove the image!" data-card-btn="">
+                <i class="bi bi-trash"></i> Remove image
+              </app-two-factor-button>
+            </div>
+          </div>
           <div class="mb-3">
             <label for="characterBioInput" class="form-label">Bio</label>
             <textarea rows="15" id="characterBioInput" class="form-control" aria-describedby="characterBioInputHelp"
@@ -116,9 +133,9 @@
             </div>
             <div class="mb-3">
               <label [for]="'abilityTraitDescriptionInput-' + i" class="form-label">Description</label>
-              <input class="form-control" [id]="'abilityTraitDescriptionInput-' + i"
-                     [attr.aria-describedby]="'abilityTraitDescriptionInputHelp-' + i"
-                     formControlName="description">
+              <textarea class="form-control" [id]="'abilityTraitDescriptionInput-' + i"
+                        [attr.aria-describedby]="'abilityTraitDescriptionInputHelp-' + i"
+                        formControlName="description"></textarea>
               <div [id]="'abilityTraitDescriptionInputHelp-' + i" class="form-text">Describe this trait more
                 explicitly.
               </div>
@@ -211,7 +228,7 @@
       <h2 class="card-title" data-card-title=""><span class="text-muted">Character: </span>{{store.name$ | async}}</h2>
       <button type="button" (click)="editorActive$.enable()"
               class="btn btn-secondary" data-card-btn>
-        <i class="bi bi-pencil-fill"></i>
+        <i class="bi bi-pencil-fill"></i> Edit
       </button>
 
       <div class="row mb-3">
@@ -230,7 +247,7 @@
               <li *ngFor="let t of store.abilities$ | async">
                 <ul class="list-unstyled">
                   <li>{{t.label}}</li>
-                  <li *ngIf="t.description as desc" class="text-muted">{{desc}}</li>
+                  <li *ngIf="t.description as desc" class="text-muted white-space-pre-line mb-2">{{desc}}</li>
                   <li>
                     <app-read-only-field inline label="Hit Die">d{{t.hitDie}}</app-read-only-field>
                   </li>
@@ -253,9 +270,13 @@
           </app-card>
         </div>
         <div class="col-sm-6">
+          <app-card *ngIf="store.sheetImageObjUrl$ | async as objUrl" class="mb-3">
+            <!--suppress AngularNgOptimizedImage -->
+            <img class="img-sheet-image" [src]="objUrl" alt="Sheet Image"/>
+          </app-card>
           <app-card *ngIf="store.bio$ | async as bio" class="mb-3">
             <h4 data-card-title="">Bio</h4>
-            <p>{{bio}}</p>
+            <p class="white-space-pre-line">{{bio}}</p>
           </app-card>
           <app-card class="mb-3">
             <h4 data-card-title="">Personality traits</h4>

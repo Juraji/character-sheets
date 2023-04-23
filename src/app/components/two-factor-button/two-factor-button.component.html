@@ -1,0 +1,14 @@
+<div class="btn-group" dropdown>
+  <button class="btn btn-danger" [ngClass]="[btnColor, btnSize] | filterNotNull" dropdownToggle
+          [id]="suffixId('button')"
+          [attr.aria-controls]="suffixId('menu')"
+          type="button">
+    <ng-content></ng-content>
+  </button>
+  <ul [id]="suffixId('menu')" *dropdownMenu class="dropdown-menu"
+      role="menu" [attr.aria-labelledby]="suffixId('button')">
+    <li role="menuitem">
+      <a class="dropdown-item" (click)="confirmed.next()">{{confirmText}}</a>
+    </li>
+  </ul>
+</div>

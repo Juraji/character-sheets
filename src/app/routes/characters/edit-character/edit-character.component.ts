@@ -1,4 +1,4 @@
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormControl, ReactiveFormsModule, Validators} from '@angular/forms'
 import {ActivatedRoute, Router} from '@angular/router'
@@ -8,9 +8,10 @@ import {map, mergeMap, tap} from 'rxjs'
 import {CardComponent} from '@components/card'
 import {ArrayIndexSeqPipe, NotPipe} from '@components/pipes'
 import {ReadOnlyFieldComponent} from '@components/read-only-field/read-only-field.component'
+import {TwoFactorButtonComponent} from '@components/two-factor-button/two-factor-button.component'
 import {CharacterAbility, CharacterTrait} from '@core/db/model'
 import {ModelFormGroup} from '@core/forms'
-import {filterNotNull, takeUntilDestroyed} from '@core/rxjs'
+import {takeUntilDestroyed} from '@core/rxjs'
 import {BoolBehaviourSubject} from '@core/rxjs/bool-behaviour-subject'
 
 import {EditCharacterStore, FormCharacter} from './edit-character.store'
@@ -27,7 +28,7 @@ const DEFAULT_SPECIES: string[] = [
 @Component({
     selector: 'app-edit-character',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, CardComponent, NotPipe, BsDropdownModule, ReadOnlyFieldComponent, ArrayIndexSeqPipe],
+    imports: [CommonModule, ReactiveFormsModule, CardComponent, NotPipe, BsDropdownModule, ReadOnlyFieldComponent, ArrayIndexSeqPipe, NgOptimizedImage, TwoFactorButtonComponent],
     providers: [EditCharacterStore],
     templateUrl: './edit-character.component.html',
     styleUrls: ['./edit-character.component.scss'],
@@ -47,7 +48,7 @@ export class EditCharacterComponent implements OnInit, OnDestroy {
         species: new FormControl('', [Validators.required]),
         combatClass: new FormControl('', [Validators.required]),
         personality: new FormArray([]),
-        abilities: new FormArray([])
+        abilities: new FormArray([]),
     })
 
     public get personalityFormArray(): FormArray<ModelFormGroup<CharacterTrait>> {
@@ -91,11 +92,6 @@ export class EditCharacterComponent implements OnInit, OnDestroy {
         this.store.characterIsNew$
             .pipe(takeUntilDestroyed(this))
             .subscribe(isNew => this.editorActive$.next(isNew))
-
-        this.store.characterId$
-            .pipe(takeUntilDestroyed(this), filterNotNull())
-            .subscribe(id => this.router.navigate(['..', id],
-                {relativeTo: this.activatedRoute, replaceUrl: true}))
     }
 
     public ngOnDestroy() {
@@ -122,7 +118,10 @@ export class EditCharacterComponent implements OnInit, OnDestroy {
         const patch = this.formGroup.value
         this.editorActive$.disable()
 
-        this.store.save(patch)
+        this.store
+            .save(patch)
+            .subscribe(c => this.router.navigate(['..', c._id],
+                {relativeTo: this.activatedRoute, replaceUrl: true}))
     }
 
     public onAddPersonalityTrait() {
@@ -139,6 +138,24 @@ export class EditCharacterComponent implements OnInit, OnDestroy {
 
     public onRemoveAbilityTrait(idx: number) {
         this.abilitiesFormArray.removeAt(idx)
+    }
+
+    public onDelete() {
+        this.store
+            .delete()
+            .subscribe(() => this.router.navigate(['../../overview'],
+                {relativeTo: this.activatedRoute, replaceUrl: true}))
+    }
+
+    public onSetSheetImage(e: Event) {
+        const target = e.target as HTMLInputElement
+        const file = target.files?.item(0)
+
+        if(!!file) this.store.updateSheetImage(file)
+    }
+
+    public onRemoveSheetImage() {
+        this.store.removeSheetImage()
     }
 
     private createCharacterTraitForm(trait?: CharacterTrait): ModelFormGroup<CharacterTrait> {

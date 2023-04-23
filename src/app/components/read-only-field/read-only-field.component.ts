@@ -1,9 +1,9 @@
 import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, Component, HostBinding, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms'
-import {v4 as uuidV4} from 'uuid'
 
 import {BooleanInput} from '@core/util/boolean-input'
+import {ComponentWithUniqueId} from '@core/util/component-with-unique-id'
 
 @Component({
     selector: 'app-read-only-field',
@@ -13,13 +13,7 @@ import {BooleanInput} from '@core/util/boolean-input'
     styleUrls: ['./read-only-field.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReadOnlyFieldComponent implements OnInit {
-    private static idGenerator: Generator<string, string> = (function* () {
-        while (true) yield uuidV4()
-    })()
-
-    @HostBinding('attr.id')
-    public id = ''
+export class ReadOnlyFieldComponent extends ComponentWithUniqueId {
 
     @Input()
     public label: Nullable<string>;
@@ -29,9 +23,6 @@ export class ReadOnlyFieldComponent implements OnInit {
     public inline: Nullable<string | boolean> = false
 
     constructor() {
-    }
-
-    public ngOnInit() {
-        this.id = `'app-read-only-field-${ReadOnlyFieldComponent.idGenerator.next().value}`
+        super('read-only-field')
     }
 }

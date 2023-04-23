@@ -1,4 +1,4 @@
-<label [for]="id + '-contents'" class="field-label text-muted" *ngIf="!!label">{{label}}</label>
-<div class="field-contents" [id]="id + '-contents'">
+<label [for]="suffixId('content')" class="field-label text-muted" *ngIf="!!label">{{label}}</label>
+<div class="field-contents" [id]="suffixId('content')">
   <ng-content></ng-content>
 </div>

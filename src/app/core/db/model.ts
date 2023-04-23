@@ -31,3 +31,5 @@ export interface CharacterAbility extends CharacterTrait {
     shieldBuf: number
     magicResistance: number
 }
+
+export const SHEET_IMAGE_ATTACHMENT = 'sheetImage'
