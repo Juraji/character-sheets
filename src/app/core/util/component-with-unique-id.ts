@@ -8,7 +8,7 @@ export abstract class ComponentWithUniqueId implements OnInit {
     private readonly suffixIdCache: Map<string, string> = new Map()
 
     @HostBinding('attr.id')
-    public id: Nullable<string>
+    public id: Optional<string>
 
     protected constructor(private readonly prefix: string) {
     }

@@ -36,13 +36,13 @@ type BtnSize = 'btn-sm' | 'btn-lg'
 export class TwoFactorButtonComponent extends ComponentWithUniqueId implements OnInit{
 
     @Input()
-    public confirmText: Nullable<string>
+    public confirmText: Optional<string>
 
     @Input()
     public btnColor: BtnColor = 'btn-primary'
 
     @Input()
-    public btnSize: Nullable<BtnSize>
+    public btnSize: Optional<BtnSize>
 
     @Output()
     public readonly confirmed: EventEmitter<void> = new EventEmitter()

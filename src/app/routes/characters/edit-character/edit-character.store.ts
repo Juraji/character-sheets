@@ -2,23 +2,27 @@ import {Injectable} from '@angular/core'
 import {EntityState} from '@ngrx/entity'
 import {map, mergeMap, Observable, pairwise, startWith, takeUntil, tap, withLatestFrom} from 'rxjs'
 
-import {Character, CharacterAbility, ModelType, SHEET_IMAGE_ATTACHMENT_ID} from '@core/db/model'
+import {Character, CharacterAbility, Model, ModelType, SHEET_IMAGE_ATTACHMENT_ID} from '@core/db/model'
 import {AppComponentStore} from '@core/ngrx'
 import {filterNotEmpty, filterNotNull, firstNotNull} from '@core/rxjs'
-import {objectOmit} from '@core/util/objects'
+import {objectOmit, objectOmitNulls} from '@core/util/objects'
 import {strSort} from '@core/util/sorters'
 
-export type StoreCharacter = NullableProperties<Omit<Character, 'abilities'>>
-export type FormCharacter = NullableProperties<Omit<Character, '_id' | '_rev' | 'modelType'>>
+export type StoreCharacter = Omit<Character, keyof Model | 'abilities'>
+export type FormCharacter = Omit<Character, keyof Model>
 
-interface EditCharacterStoreState extends StoreCharacter {
-    sheetImage: Nullable<Blob>,
+interface EditCharacterStoreState {
+    id: Optional<string>,
+    rev: Optional<string>,
+    readonly modelType: ModelType,
+    character: Optional<StoreCharacter>
+    sheetImage: Optional<Blob>,
     abilities: EntityState<CharacterAbility>
 }
 
-export interface EditCharacterStoreData extends StoreCharacter {
-    sheetImage: Nullable<Blob>
-    abilities: CharacterAbility[]
+export interface EditCharacterStoreData {
+    character: Nullable<Character, keyof Model>
+    sheetImage: Optional<Blob>
 }
 
 @Injectable()
@@ -27,31 +31,27 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
     private readonly abilityAdapter = this.createCustomIdEntityAdapter<CharacterAbility>(e => e.label, strSort(e => e.label))
     private readonly abilitySelectors = this.abilityAdapter.getSelectors()
 
-    public readonly characterId$: Observable<Nullable<string>> = this.select(s => s._id)
-    public readonly characterRev$: Observable<Nullable<string>> = this.select(s => s._rev)
+    public readonly characterId$: Observable<Optional<string>> = this.select(s => s.id)
+    public readonly characterRev$: Observable<Optional<string>> = this.select(s => s.rev)
     public readonly characterIsNew$: Observable<boolean> = this.characterId$.pipe(map(id => !id))
-    public readonly modelType$: Observable<Nullable<ModelType>> = this.select(s => s.modelType)
-
-    public readonly age$: Observable<number> = this
-        .select(s => s.age)
-        .pipe(filterNotNull())
-    public readonly bio$: Observable<string> = this
-        .select(s => s.bio)
-        .pipe(filterNotNull(), filterNotEmpty())
-    public readonly combatClass$: Observable<string> = this
-        .select(s => s.combatClass)
-        .pipe(filterNotNull(), filterNotEmpty())
-    public readonly name$: Observable<string> = this
-        .select(s => s.name)
-        .pipe(filterNotNull(), filterNotEmpty())
-    public readonly species$: Observable<string> = this
-        .select(s => s.species)
-        .pipe(filterNotNull(), filterNotEmpty())
+    public readonly modelType$: Observable<ModelType> = this.select(s => s.modelType)
 
     public readonly character$: Observable<StoreCharacter> = this
-        .select(s => objectOmit(s, 'abilities', 'sheetImage'))
+        .select(s => s.character)
+        .pipe(filterNotNull())
 
-    public readonly sheetImage$: Observable<Nullable<Blob>> = this.select(s => s.sheetImage)
+    public readonly age$: Observable<number> = this.character$
+        .pipe(map(s => s.age))
+    public readonly bio$: Observable<string> = this.character$
+        .pipe(map(s => s.bio), filterNotEmpty())
+    public readonly combatClass$: Observable<string> = this.character$
+        .pipe(map(s => s.combatClass), filterNotEmpty())
+    public readonly name$: Observable<string> = this.character$
+        .pipe(map(s => s.name), filterNotEmpty())
+    public readonly species$: Observable<string> = this.character$
+        .pipe(map(s => s.species), filterNotEmpty())
+
+    public readonly sheetImage$: Observable<Optional<Blob>> = this.select(s => s.sheetImage)
     public readonly sheetImageObjUrl$: Observable<string> = this.sheetImage$
         .pipe(
             filterNotNull(),
@@ -70,14 +70,10 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
         super()
 
         this.setState({
-            _id: null,
-            _rev: null,
-            age: null,
-            bio: null,
-            combatClass: null,
+            id: null,
+            rev: null,
             modelType: 'CHARACTER',
-            name: null,
-            species: null,
+            character: null,
             sheetImage: null,
             abilities: this.abilityAdapter.getInitialState()
         })
@@ -87,30 +83,15 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
             .subscribe(sd => this.setStoreData(sd))
     }
 
-    public save(patch: FormCharacter) {
+    public save(character: Nullable<FormCharacter>) {
         return this.characterId$.pipe(
-            withLatestFrom(this.characterRev$),
-            map(([_id, _rev]) =>
-                ({...patch, _id, _rev, modelType: 'CHARACTER'}) as Character),
+            withLatestFrom(this.characterRev$, this.character$),
+            map(([_id, _rev, existing]) =>
+                ({...existing, ...objectOmitNulls(character), _id, _rev, modelType: 'CHARACTER'}) as Character),
             mergeMap(patch => this.db.save(patch)),
-            tap(({abilities, ...rest}) => this.patchState(s => ({
-                ...rest,
-                abilities: this.abilityAdapter.setAll(abilities, s.abilities)
-            })))
+            tap(c => this.patchCharacter(c))
         )
     }
-
-    public readonly updateSheetImage: (f: Blob) => void = this.effect<Blob>($ => $.pipe(
-        withLatestFrom(this.characterId$.pipe(filterNotNull()), this.characterRev$.pipe(filterNotNull())),
-        mergeMap(([f, docId, rev]) => this.db.putAttachment(docId, rev, SHEET_IMAGE_ATTACHMENT_ID, f.type, f)),
-        tap(({_id, _rev, content}) => this.patchState({_id, _rev, sheetImage: content})),
-    ))
-
-    public readonly removeSheetImage: () => void = this.effect<void>($ => $.pipe(
-        withLatestFrom(this.characterId$.pipe(filterNotNull()), this.characterRev$.pipe(filterNotNull())),
-        mergeMap(([_, docId, rev]) => this.db.removeAttachment(docId, rev, SHEET_IMAGE_ATTACHMENT_ID)),
-        tap(model => this.patchState({...model, sheetImage: null}))
-    ))
 
     public delete() {
         return this.characterId$
@@ -119,13 +100,39 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
                 withLatestFrom(this.characterRev$.pipe(filterNotNull()), this.modelType$.pipe(filterNotNull())),
                 mergeMap(([_id, _rev, modelType]) =>
                     this.db.delete({_id, _rev, modelType})),
-                tap(() => this.patchState({_id: null, _rev: null}))
+                tap(() => this.patchState({id: null, rev: null}))
             )
     }
 
-    private setStoreData({abilities, ...rest}: EditCharacterStoreData) {
+    public readonly updateSheetImage: (f: Blob) => void = this.effect<Blob>($ => $.pipe(
+        withLatestFrom(this.characterId$.pipe(filterNotNull()), this.characterRev$.pipe(filterNotNull())),
+        mergeMap(([f, docId, rev]) => this.db.putAttachment(docId, rev, SHEET_IMAGE_ATTACHMENT_ID, f.type, f)),
+        tap(({_id, _rev, content}) => this.patchState({id: _id, rev: _rev, sheetImage: content})),
+    ))
+
+    public readonly removeSheetImage: () => void = this.effect<void>($ => $.pipe(
+        withLatestFrom(this.characterId$.pipe(filterNotNull()), this.characterRev$.pipe(filterNotNull())),
+        mergeMap(([_, docId, rev]) => this.db.removeAttachment(docId, rev, SHEET_IMAGE_ATTACHMENT_ID)),
+        tap(model => this.patchState({...model, sheetImage: null}))
+    ))
+
+    private setStoreData(sd: EditCharacterStoreData) {
+        this.patchCharacter(sd.character)
+        this.patchState({sheetImage: sd.sheetImage,})
+    }
+
+    private patchCharacter(character: Nullable<Character, keyof Model>) {
+        const {
+            _id,
+            _rev,
+            abilities,
+            ...c
+        } = character
+
         this.patchState(s => ({
-            ...rest,
+            id: _id,
+            rev: _rev,
+            character: objectOmit(c, 'modelType'),
             abilities: this.abilityAdapter.setAll(abilities, s.abilities)
         }))
     }

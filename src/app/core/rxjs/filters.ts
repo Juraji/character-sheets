@@ -1,10 +1,12 @@
 import {filter, first, Observable, pipe, UnaryFunction} from 'rxjs'
 
+import {isNotNullable} from '@core/util/objects';
+
 /**
  * Filter NULL or undefined values
  */
 export const filterNotNull: <T>() => UnaryFunction<Observable<T>, Observable<NonNullable<T>>> = () => pipe(
-    filter(o => o !== null && o !== undefined) as never
+    filter(isNotNullable) as never
 );
 
 /**

@@ -16,11 +16,11 @@ import {ComponentWithUniqueId} from '@core/util/component-with-unique-id'
 export class ReadOnlyFieldComponent extends ComponentWithUniqueId {
 
     @Input()
-    public label: Nullable<string>;
+    public label: Optional<string>;
 
     @Input()
     @BooleanInput()
-    public inline: Nullable<string | boolean> = false
+    public inline: Optional<string | boolean> = false
 
     constructor() {
         super('read-only-field')

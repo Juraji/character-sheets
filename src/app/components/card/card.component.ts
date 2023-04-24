@@ -12,5 +12,5 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 export class CardComponent {
 
     @Input()
-    public title: Nullable<string>
+    public title: Optional<string>
 }

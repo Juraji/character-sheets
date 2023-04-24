@@ -25,7 +25,7 @@ const DEFAULT_SPECIES: string[] = [
     'Elf', 'Halfling', 'Human', 'Orc', 'Undead'
 ]
 
-const ABILITY_DEFAULTS: NullableProperties<CharacterAbility> = {
+const ABILITY_DEFAULTS: CharacterAbility = {
     label: '',
     description: '',
     baseDamage: 10,

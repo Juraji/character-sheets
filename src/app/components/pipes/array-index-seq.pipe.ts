@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
-import {numberSequence} from '@core/util/sequences'
+import {generateArray} from '@core/util/sequences'
 
 @Pipe({
     name: 'arrayIndexSeq',
@@ -8,8 +8,8 @@ import {numberSequence} from '@core/util/sequences'
 })
 export class ArrayIndexSeqPipe implements PipeTransform {
 
-    public transform(length: Nullable<number>): number[] {
-        if (!!length) return Array.from(numberSequence(length - 1))
+    public transform(length: Optional<number>): number[] {
+        if (!!length) return generateArray(0, p => p < length - 1 ? p + 1 : null)
         else return []
     }
 

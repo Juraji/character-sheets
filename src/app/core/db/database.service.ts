@@ -58,7 +58,7 @@ export class DatabaseService implements OnDestroy {
             .pipe(map(r => !!r?.ok))
     }
 
-    public getAttachment(docId: string, name: string): Observable<Nullable<Blob>> {
+    public getAttachment(docId: string, name: string): Observable<Optional<Blob>> {
         return from(this.pouchDb.getAttachment(docId, name) as Promise<Blob>)
     }
 
@@ -101,7 +101,7 @@ export class DatabaseService implements OnDestroy {
             )
     }
 
-    public readonly catchNotFound = <T>(defaultValue: Nullable<T> = null) => pipe<Observable<T>, Observable<Nullable<T>>>(
+    public readonly catchNotFound = <T>(defaultValue: Optional<T> = null) => pipe<Observable<T>, Observable<Optional<T>>>(
         catchError(e => e.name === 'not_found' ? [defaultValue] : throwError(e))
     )
 
