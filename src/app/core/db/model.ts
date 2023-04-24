@@ -16,16 +16,12 @@ export interface Character extends Model {
     age: number
     species: string
     combatClass: string
-    personality: CharacterTrait[]
     abilities: CharacterAbility[]
 }
 
-export interface CharacterTrait {
+export interface CharacterAbility {
     label: string
     description: string
-}
-
-export interface CharacterAbility extends CharacterTrait {
     hitDie: number
     baseDamage: number
     shieldBuf: number

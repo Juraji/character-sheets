@@ -21,7 +21,6 @@ export const editCharacterResolver: ResolveFn<EditCharacterStoreData> = route =>
             species: '',
             combatClass: '',
             sheetImage: null,
-            personality: [],
             abilities: []
         }
     } else {

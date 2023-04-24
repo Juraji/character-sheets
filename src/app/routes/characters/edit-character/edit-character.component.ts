@@ -9,7 +9,7 @@ import {CardComponent} from '@components/card'
 import {ArrayIndexSeqPipe, NotPipe} from '@components/pipes'
 import {ReadOnlyFieldComponent} from '@components/read-only-field/read-only-field.component'
 import {TwoFactorButtonComponent} from '@components/two-factor-button/two-factor-button.component'
-import {CharacterAbility, CharacterTrait} from '@core/db/model'
+import {CharacterAbility} from '@core/db/model'
 import {ModelFormGroup} from '@core/forms'
 import {takeUntilDestroyed} from '@core/rxjs'
 import {BoolBehaviourSubject} from '@core/rxjs/bool-behaviour-subject'
@@ -24,6 +24,15 @@ const DEFAULT_COMBAT_CLASSES: string[] = [
 const DEFAULT_SPECIES: string[] = [
     'Elf', 'Halfling', 'Human', 'Orc', 'Undead'
 ]
+
+const ABILITY_DEFAULTS: NullableProperties<CharacterAbility> = {
+    label: '',
+    description: '',
+    baseDamage: 10,
+    hitDie: 8,
+    magicResistance: 0,
+    shieldBuf: 0
+}
 
 @Component({
     selector: 'app-edit-character',
@@ -47,13 +56,8 @@ export class EditCharacterComponent implements OnInit, OnDestroy {
         age: new FormControl(100, [Validators.required, Validators.min(1)]),
         species: new FormControl('', [Validators.required]),
         combatClass: new FormControl('', [Validators.required]),
-        personality: new FormArray([]),
         abilities: new FormArray([]),
     })
-
-    public get personalityFormArray(): FormArray<ModelFormGroup<CharacterTrait>> {
-        return this.formGroup.get('personality') as FormArray<ModelFormGroup<CharacterTrait>>
-    }
 
     public get abilitiesFormArray(): FormArray<ModelFormGroup<CharacterAbility>> {
         return this.formGroup.get('abilities') as FormArray<ModelFormGroup<CharacterAbility>>
@@ -70,15 +74,6 @@ export class EditCharacterComponent implements OnInit, OnDestroy {
         this.store.character$
             .pipe(takeUntilDestroyed(this))
             .subscribe(c => this.formGroup.patchValue(c))
-
-        this.store.personalityTraits$
-            .pipe(
-                takeUntilDestroyed(this),
-                tap(() => this.personalityFormArray.clear()),
-                mergeMap(traits => traits),
-                map(t => this.createCharacterTraitForm(t))
-            )
-            .subscribe(f => this.personalityFormArray.push(f))
 
         this.store.abilities$
             .pipe(
@@ -124,14 +119,6 @@ export class EditCharacterComponent implements OnInit, OnDestroy {
                 {relativeTo: this.activatedRoute, replaceUrl: true}))
     }
 
-    public onAddPersonalityTrait() {
-        this.personalityFormArray.push(this.createCharacterTraitForm())
-    }
-
-    public onRemovePersonalityTrait(idx: number) {
-        this.personalityFormArray.removeAt(idx)
-    }
-
     public onAddAbilityTrait() {
         this.abilitiesFormArray.push(this.createCharacterAbilityForm())
     }
@@ -151,28 +138,21 @@ export class EditCharacterComponent implements OnInit, OnDestroy {
         const target = e.target as HTMLInputElement
         const file = target.files?.item(0)
 
-        if(!!file) this.store.updateSheetImage(file)
+        if (!!file) this.store.updateSheetImage(file)
     }
 
     public onRemoveSheetImage() {
         this.store.removeSheetImage()
     }
 
-    private createCharacterTraitForm(trait?: CharacterTrait): ModelFormGroup<CharacterTrait> {
-        return new ModelFormGroup<CharacterTrait>({
-            label: new FormControl(trait?.label || null, [Validators.required]),
-            description: new FormControl(trait?.description || '')
-        })
-    }
-
-    private createCharacterAbilityForm(ability?: CharacterAbility) {
+    private createCharacterAbilityForm(ability = ABILITY_DEFAULTS) {
         return new ModelFormGroup<CharacterAbility>({
-            label: new FormControl(ability?.label || null, [Validators.required]),
-            description: new FormControl(ability?.description || ''),
-            hitDie: new FormControl(ability?.hitDie || 8, [Validators.required, Validators.min(2)]),
-            baseDamage: new FormControl(ability?.baseDamage || 10, [Validators.required]),
-            shieldBuf: new FormControl(ability?.shieldBuf || 0, [Validators.required]),
-            magicResistance: new FormControl(ability?.magicResistance || 0, [Validators.required]),
+            label: new FormControl(ability.label, [Validators.required]),
+            description: new FormControl(ability.description),
+            hitDie: new FormControl(ability.hitDie, [Validators.required, Validators.min(2)]),
+            baseDamage: new FormControl(ability.baseDamage, [Validators.required]),
+            shieldBuf: new FormControl(ability.shieldBuf, [Validators.required]),
+            magicResistance: new FormControl(ability.magicResistance, [Validators.required]),
         })
     }
 }

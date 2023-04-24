@@ -2,32 +2,27 @@ import {Injectable} from '@angular/core'
 import {EntityState} from '@ngrx/entity'
 import {map, mergeMap, Observable, pairwise, startWith, takeUntil, tap, withLatestFrom} from 'rxjs'
 
-import {Character, CharacterAbility, CharacterTrait, ModelType, SHEET_IMAGE_ATTACHMENT_ID} from '@core/db/model'
+import {Character, CharacterAbility, ModelType, SHEET_IMAGE_ATTACHMENT_ID} from '@core/db/model'
 import {AppComponentStore} from '@core/ngrx'
 import {filterNotEmpty, filterNotNull, firstNotNull} from '@core/rxjs'
 import {objectOmit} from '@core/util/objects'
 import {strSort} from '@core/util/sorters'
 
-export type StoreCharacter = NullableProperties<Omit<Character, 'personality' | 'abilities'>>
+export type StoreCharacter = NullableProperties<Omit<Character, 'abilities'>>
 export type FormCharacter = NullableProperties<Omit<Character, '_id' | '_rev' | 'modelType'>>
 
 interface EditCharacterStoreState extends StoreCharacter {
     sheetImage: Nullable<Blob>,
-    personality: EntityState<CharacterTrait>
     abilities: EntityState<CharacterAbility>
 }
 
 export interface EditCharacterStoreData extends StoreCharacter {
     sheetImage: Nullable<Blob>
-    personality: CharacterTrait[]
     abilities: CharacterAbility[]
 }
 
 @Injectable()
 export class EditCharacterStore extends AppComponentStore<EditCharacterStoreState> {
-
-    private readonly traitAdapter = this.createCustomIdEntityAdapter<CharacterTrait>(e => e.label, strSort(e => e.label))
-    private readonly traitSelectors = this.traitAdapter.getSelectors()
 
     private readonly abilityAdapter = this.createCustomIdEntityAdapter<CharacterAbility>(e => e.label, strSort(e => e.label))
     private readonly abilitySelectors = this.abilityAdapter.getSelectors()
@@ -54,7 +49,7 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
         .pipe(filterNotNull(), filterNotEmpty())
 
     public readonly character$: Observable<StoreCharacter> = this
-        .select(s => objectOmit(s, 'personality', 'abilities'))
+        .select(s => objectOmit(s, 'abilities', 'sheetImage'))
 
     public readonly sheetImage$: Observable<Nullable<Blob>> = this.select(s => s.sheetImage)
     public readonly sheetImageObjUrl$: Observable<string> = this.sheetImage$
@@ -66,10 +61,6 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
             tap(([prev]) => URL.revokeObjectURL(prev)),
             map(([_, next]) => next)
         )
-
-    public readonly personalityTraits$: Observable<CharacterTrait[]> = this
-        .select(s => s.personality)
-        .pipe(map(this.traitSelectors.selectAll))
 
     public readonly abilities$: Observable<CharacterAbility[]> = this
         .select(s => s.abilities)
@@ -88,7 +79,6 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
             name: null,
             species: null,
             sheetImage: null,
-            personality: this.traitAdapter.getInitialState(),
             abilities: this.abilityAdapter.getInitialState()
         })
 
@@ -103,10 +93,9 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
             map(([_id, _rev]) =>
                 ({...patch, _id, _rev, modelType: 'CHARACTER'}) as Character),
             mergeMap(patch => this.db.save(patch)),
-            tap(({personality, abilities, ...rest}) => this.patchState(s => ({
+            tap(({abilities, ...rest}) => this.patchState(s => ({
                 ...rest,
-                personality: this.traitAdapter.setAll(personality, s.personality),
-                abilities: this.traitAdapter.setAll(abilities, s.abilities)
+                abilities: this.abilityAdapter.setAll(abilities, s.abilities)
             })))
         )
     }
@@ -134,10 +123,9 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
             )
     }
 
-    private setStoreData({personality, abilities, ...rest}: EditCharacterStoreData) {
+    private setStoreData({abilities, ...rest}: EditCharacterStoreData) {
         this.patchState(s => ({
             ...rest,
-            personality: this.traitAdapter.setAll(personality, s.personality),
             abilities: this.abilityAdapter.setAll(abilities, s.abilities)
         }))
     }
