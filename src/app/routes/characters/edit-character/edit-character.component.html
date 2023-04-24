@@ -6,7 +6,7 @@
               class="btn btn-secondary" data-card-btn>
         <i class="bi bi-x-lg"></i> Cancel
       </button>
-      <app-two-factor-button btnColor="btn-danger" (confirmed)="onDelete()" confirmText="Yes, delete this character!"
+      <app-two-factor-button btnClass="btn-danger" (confirmed)="onDelete()" confirmText="Yes, delete this character!"
                              data-card-btn="">
         <i class="bi bi-trash"></i> Delete
       </app-two-factor-button>
@@ -93,6 +93,7 @@
               <app-two-factor-button
                 *ngIf="store.sheetImage$ | async"
                 (confirmed)="onRemoveSheetImage()"
+                btnClass="btn-danger"
                 confirmText="Yes, remove the image!" data-card-btn="">
                 <i class="bi bi-trash"></i> Remove image
               </app-two-factor-button>
@@ -206,6 +207,7 @@
             <app-read-only-field inline label="Species">{{store.species$ | async}}</app-read-only-field>
             <app-read-only-field inline label="Combat Class">{{store.combatClass$ | async}}</app-read-only-field>
           </app-card>
+          <ng-container *ngIf="store.sheetImage$ | async" [ngTemplateOutlet]="bioTpl"></ng-container>
           <app-card class="mb-3">
             <h4 data-card-title="">Abilities</h4>
             <span *ngIf="store.abilities$ | async | not"
@@ -241,12 +243,16 @@
             <!--suppress AngularNgOptimizedImage -->
             <img class="img-sheet-image" [src]="objUrl" alt="Sheet Image"/>
           </app-card>
-          <app-card *ngIf="store.bio$ | async as bio" class="mb-3">
-            <h4 data-card-title="">Bio</h4>
-            <p class="white-space-pre-line">{{bio}}</p>
-          </app-card>
+          <ng-container *ngIf="store.sheetImage$ | async | not" [ngTemplateOutlet]="bioTpl"></ng-container>
         </div>
       </div>
+
+      <ng-template #bioTpl>
+        <app-card *ngIf="store.bio$ | async as bio" class="mb-3">
+          <h4 data-card-title="">Bio</h4>
+          <p class="white-space-pre-line">{{bio}}</p>
+        </app-card>
+      </ng-template>
     </app-card>
   </ng-template>
 </div>

@@ -5,26 +5,6 @@ import {BsDropdownModule} from 'ngx-bootstrap/dropdown'
 import {FilterNotNullPipe} from '@components/pipes/filter-not-null.pipe'
 import {ComponentWithUniqueId} from '@core/util/component-with-unique-id'
 
-type BtnColor =
-    'btn-primary' |
-    'btn-secondary' |
-    'btn-success' |
-    'btn-info' |
-    'btn-warning' |
-    'btn-danger' |
-    'btn-light' |
-    'btn-dark' |
-    'btn-outline-primary' |
-    'btn-outline-secondary' |
-    'btn-outline-success' |
-    'btn-outline-info' |
-    'btn-outline-warning' |
-    'btn-outline-danger' |
-    'btn-outline-light' |
-    'btn-outline-dark'
-
-type BtnSize = 'btn-sm' | 'btn-lg'
-
 @Component({
     selector: 'app-two-factor-button',
     standalone: true,
@@ -33,16 +13,13 @@ type BtnSize = 'btn-sm' | 'btn-lg'
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class TwoFactorButtonComponent extends ComponentWithUniqueId implements OnInit{
+export class TwoFactorButtonComponent extends ComponentWithUniqueId implements OnInit {
 
     @Input()
     public confirmText: Optional<string>
 
     @Input()
-    public btnColor: BtnColor = 'btn-primary'
-
-    @Input()
-    public btnSize: Optional<BtnSize>
+    public btnClass = ''
 
     @Output()
     public readonly confirmed: EventEmitter<void> = new EventEmitter()
