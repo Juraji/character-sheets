@@ -1,7 +1,21 @@
+@import "src/styles/variables-import";
+
 :host {
   .stories-table {
     .status-column {
       width: 5rem;
+
+      &.CONCEPT {
+        color: $blue-400;
+      }
+
+      &.DRAFT {
+        color: $orange-400;
+      }
+
+      &.DONE {
+        color: $green-400;
+      }
     }
     .actions-column {
       width: 5rem;

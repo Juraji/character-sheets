@@ -1,10 +1,22 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import PouchDB from 'pouchdb'
 import PouchDBFindPlugin from 'pouchdb-find'
-import {catchError, filter, from, fromEvent, map, mergeMap, Observable, pipe, throwError, UnaryFunction} from 'rxjs'
+import {
+    catchError,
+    defer,
+    filter,
+    from,
+    fromEvent,
+    map,
+    mergeMap,
+    Observable,
+    pipe,
+    throwError,
+    UnaryFunction
+} from 'rxjs'
 import {v4 as uuidV4} from 'uuid'
 
-import {Model, ModelType} from '@core/db/model'
+import {Attachment, Model, ModelType} from '@core/db/model'
 import {AppException} from '@core/exceptions'
 import {takeUntilDestroyed} from '@core/rxjs'
 
@@ -34,32 +46,47 @@ export class DatabaseService implements OnDestroy {
     }
 
     public getById<T extends Model>(documentId: string): Observable<T> {
-        return from(this.pouchDb.get<T>(documentId))
+        return defer(() => this.pouchDb.get<T>(documentId))
     }
 
     public getAllByType<T extends Model>(modelType: ModelType): Observable<T[]> {
         const findRequest: PouchDB.Find.FindRequest<T> = {selector: {modelType}}
         // noinspection JSVoidFunctionReturnValueUsed
-        return from(this.pouchDb.find(findRequest) as Promise<PouchDB.Find.FindResponse<T>>)
+        return defer(() => this.pouchDb.find(findRequest) as Promise<PouchDB.Find.FindResponse<T>>)
             .pipe(map(res => res.docs))
     }
 
-    public save<T extends Model>(doc: T): Observable<T> {
-        const updateCandidate: T = !doc._id || doc._id === ''
+    public save<T extends Model>(doc: Nullable<T, '_id' | '_rev'>): Observable<T> {
+        const updateCandidate: T = (!doc._id
             ? {...doc, _id: uuidV4(), _rev: undefined}
-            : doc
+            : doc) as T
 
-        return from(this.pouchDb.put(updateCandidate))
-            .pipe(map(r => ({...doc, _id: r.id, _rev: r.rev})))
+        return defer(() => this.pouchDb.put(updateCandidate))
+            .pipe(map(r => ({...doc, _id: r.id, _rev: r.rev}) as T))
     }
 
     public delete<T extends Model>(doc: T): Observable<boolean> {
-        return from(this.pouchDb.remove(doc))
+        return defer(() => this.pouchDb.remove(doc))
             .pipe(map(r => !!r?.ok))
     }
 
-    public getAttachment(docId: string, name: string): Observable<Optional<Blob>> {
-        return from(this.pouchDb.getAttachment(docId, name) as Promise<Blob>)
+    public getAttachment(docId: string, name: string): Observable<Attachment> {
+        return defer(() => this.pouchDb.getAttachment(docId, name) as Promise<Blob>)
+            .pipe(map(content => ({name, content, contentType: content.type})))
+    }
+
+    public getAllAttachments(docId: string): Observable<Attachment[]> {
+        return defer(() => this.pouchDb.get(docId, {attachments: true, binary: true}))
+            .pipe(
+                map(it => (it._attachments || {}) as Record<string, PouchDB.Core.FullAttachment>),
+                map(attMap => Object
+                    .entries(attMap)
+                    .map(([name, att]) => ({
+                        name,
+                        contentType: att.content_type,
+                        content: att.data as Blob
+                    })))
+            )
     }
 
     public putAttachment(
@@ -68,15 +95,18 @@ export class DatabaseService implements OnDestroy {
         name: string,
         contentType: string,
         content: Blob
-    ): Observable<Omit<Model, 'modelType'> & { content: Blob }> {
-        return from(this.pouchDb.putAttachment(docId, name, docRev, content, contentType)).pipe(
+    ): Observable<Omit<Model, 'modelType'> & { attachment: Attachment }> {
+        return defer(() => this.pouchDb.putAttachment(docId, name, docRev, content, contentType)).pipe(
             this.handlePouchDbResponse(),
-            map(r => ({_id: r.id, _rev: r.rev, content}))
+            map(r => ({
+                _id: r.id, _rev: r.rev,
+                attachment: {name, content, contentType: content.type}
+            }))
         )
     }
 
     public removeAttachment(docId: string, docRev: string, name: string): Observable<Omit<Model, 'modelType'>> {
-        return from(this.pouchDb.removeAttachment(docId, name, docRev)).pipe(
+        return defer(() => this.pouchDb.removeAttachment(docId, name, docRev)).pipe(
             this.handlePouchDbResponse(),
             map(r => ({_id: r.id, _rev: r.rev}))
         )
@@ -88,7 +118,7 @@ export class DatabaseService implements OnDestroy {
         documentSelector?: PouchDB.Find.Selector
     ) {
         // noinspection JSVoidFunctionReturnValueUsed
-        return from(this.pouchDb.getIndexes())
+        return defer(() => this.pouchDb.getIndexes())
             .pipe(
                 filter(res => !res.indexes.some(idx => idx.name === name)),
                 mergeMap(() => from(this.pouchDb.createIndex({

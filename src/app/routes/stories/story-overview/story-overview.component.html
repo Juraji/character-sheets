@@ -16,11 +16,12 @@
     </thead>
     <tbody>
     <tr *ngFor="let s of store.stories$ | async">
-      <td class="status-column">{{s.status}}</td>
+      <td class="status-column" [ngClass]="[s.status]">{{s.status | titlecase}}</td>
       <td class="title-column">{{s.title}}</td>
       <td class="actions-column">
         <div class="btn-group btn-group-sm">
-          <a class="btn btn-primary">
+          <!--suppress TypeScriptUnresolvedReference -->
+          <a class="btn btn-primary" [routerLink]="['../edit', s._id]">
             <i class="bi bi-door-open"></i>
           </a>
         </div>

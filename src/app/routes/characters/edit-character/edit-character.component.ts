@@ -5,10 +5,11 @@ import {ActivatedRoute, Router} from '@angular/router'
 import {BsDropdownModule} from 'ngx-bootstrap/dropdown'
 import {map, mergeMap, tap} from 'rxjs'
 
+import {AttachmentImgComponent} from '@components/attachment-img';
 import {CardComponent} from '@components/card'
 import {ArrayIndexSeqPipe, NotPipe} from '@components/pipes'
 import {ReadOnlyFieldComponent} from '@components/read-only-field/read-only-field.component'
-import {TwoFactorButtonComponent} from '@components/two-factor-button/two-factor-button.component'
+import {TwoFactorButtonComponent} from '@components/two-factor-button'
 import {CharacterAbility} from '@core/db/model'
 import {ModelFormGroup} from '@core/forms'
 import {takeUntilDestroyed} from '@core/rxjs'
@@ -37,7 +38,7 @@ const ABILITY_DEFAULTS: CharacterAbility = {
 @Component({
     selector: 'app-edit-character',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, CardComponent, NotPipe, BsDropdownModule, ReadOnlyFieldComponent, ArrayIndexSeqPipe, NgOptimizedImage, TwoFactorButtonComponent],
+    imports: [CommonModule, ReactiveFormsModule, CardComponent, NotPipe, BsDropdownModule, ReadOnlyFieldComponent, ArrayIndexSeqPipe, NgOptimizedImage, TwoFactorButtonComponent, AttachmentImgComponent],
     providers: [EditCharacterStore],
     templateUrl: './edit-character.component.html',
     styleUrls: ['./edit-character.component.scss'],

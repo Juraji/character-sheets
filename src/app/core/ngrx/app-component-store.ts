@@ -1,13 +1,20 @@
 import {EnvironmentInjector, inject} from '@angular/core'
 import {ActivatedRoute, ResolveFn, Router} from '@angular/router'
 import {ComponentStore} from '@ngrx/component-store'
-import {Comparer, createEntityAdapter, EntityAdapter, IdSelector} from '@ngrx/entity'
-import {isObservable, ObservableInput} from 'rxjs'
+import {Comparer, createEntityAdapter, EntityAdapter, EntityState, IdSelector} from '@ngrx/entity'
+import {isObservable, map, ObservableInput, OperatorFunction} from 'rxjs'
 
 import {DatabaseService} from '@core/db/database.service'
 
-export type AppEntityAdapter<T, ADP extends EntityAdapter<T> = EntityAdapter<T>, SEL = ReturnType<ADP['getSelectors']>> =
+export type AppEntityAdapterOld<T, ADP extends EntityAdapter<T> = EntityAdapter<T>, SEL = ReturnType<ADP['getSelectors']>> =
     Omit<ADP, 'getSelectors'> & { [P in keyof SEL]: SEL[P] }
+
+export interface AppEntityAdapter<T, ID extends string | number = string> extends EntityAdapter<T> {
+    selectIds: OperatorFunction<EntityState<T>, ID[]>
+    selectEntities: OperatorFunction<EntityState<T>, Record<ID, T>>
+    selectAll: OperatorFunction<EntityState<T>, T[]>
+    selectTotal: OperatorFunction<EntityState<T>, number>
+}
 
 export abstract class AppComponentStore<T extends object> extends ComponentStore<T> {
     protected readonly db: DatabaseService
@@ -24,9 +31,16 @@ export abstract class AppComponentStore<T extends object> extends ComponentStore
         this.router = inject(Router)
     }
 
-    protected createEntityAdapter<T>(selectId: IdSelector<T>, sortComparer?: Comparer<T>): AppEntityAdapter<T> {
+    protected createEntityAdapter<T, ID extends string | number = string>(selectId: IdSelector<T>, sortComparer?: Comparer<T>): AppEntityAdapter<T, ID> {
         const adapter: EntityAdapter<T> = createEntityAdapter<T>({selectId, sortComparer})
-        return {...adapter, ...adapter.getSelectors()} as AppEntityAdapter<T>
+        const selectors = adapter.getSelectors()
+        return {
+            ...adapter,
+            selectIds: map(selectors.selectIds),
+            selectEntities: map(selectors.selectEntities),
+            selectAll: map(selectors.selectAll),
+            selectTotal: map(selectors.selectTotal),
+        } as AppEntityAdapter<T, ID>
     }
 
     protected runResolve<R>(resolve: ResolveFn<R>): ObservableInput<R> {

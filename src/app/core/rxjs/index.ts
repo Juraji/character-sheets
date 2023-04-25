@@ -1,3 +1,5 @@
 export * from './filters'
+export * from './map'
 export * from './fork-join'
 export * from './take-until-destroyed'
+export * from './bool-behaviour-subject'

@@ -23,7 +23,7 @@ export class CharactersOverviewStore extends AppComponentStore<CharactersOvervie
 
     public readonly characters$: Observable<Character[]> = this
         .select(s => s.characters)
-        .pipe(map(this.characterAdapter.selectAll))
+        .pipe(this.characterAdapter.selectAll)
 
     constructor() {
         super()

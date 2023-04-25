@@ -1,0 +1,53 @@
+<div class="container">
+  <form [formGroup]="formGroup" (submit)="onFormSubmit()">
+    <app-card>
+      <h2 class="card-title" data-card-title=""><span class="text-muted">Story: </span>{{store.title$ | async}}</h2>
+      <app-two-factor-button btnClass="btn-outline-danger" (confirmed)="onDeleteStory()"
+                             confirmText="Yes, delete this story!"
+                             data-card-btn="">
+        <i class="bi bi-trash"></i> Delete
+      </app-two-factor-button>
+      <button type="submit" class="btn btn-primary" data-card-btn=""
+              *ngIf="editorActive$ | async"
+              [disabled]="formGroup.invalid">
+        <i class="bi bi-save"></i> Save
+      </button>
+      <button type="button" (click)="editorActive$.toggle()"
+              class="btn btn-secondary" data-card-btn="">
+        <span *ngIf="editorActive$ | async"><i class="bi bi-x-lg"></i> Cancel</span>
+        <span *ngIf="editorActive$ | async | not"><i class="bi bi-pencil-fill"></i> Edit</span>
+      </button>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="row">
+            <div class="col-sm-9">
+              <div class="mb-3">
+                <label for="storyTitleInput" class="form-label">Title</label>
+                <input class="form-control" id="storyTitleInput" aria-describedby="storyTitleInputHelp"
+                       formControlName="title">
+                <div id="storyTitleInputHelp" class="form-text">Story or chapter title.</div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="mb-3">
+                <label for="storyStatusInput" class="form-label">Status</label>
+                <select class="form-control" id="storyStatusInput"
+                        formControlName="status">
+                  <option value="CONCEPT">Concept</option>
+                  <option value="DRAFT">Draft</option>
+                  <option value="DONE">Done</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <textarea class="form-control" id="storyDrafTextInput" aria-describedby="storyDrafTextInputHelp"
+                      rows="20" formControlName="draftText"></textarea>
+            <div id="storyDrafTextInputHelp" class="form-text">A space for you to draft up story.</div>
+          </div>
+        </div>
+      </div>
+    </app-card>
+  </form>
+</div>

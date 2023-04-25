@@ -4,6 +4,7 @@ import {forkJoin} from 'rxjs'
 
 import {DatabaseService} from '@core/db/database.service'
 import {Character, Model, SHEET_IMAGE_ATTACHMENT_ID} from '@core/db/model'
+import {ForkJoinSource} from '@core/rxjs';
 
 import {EditCharacterStoreData} from './edit-character.store'
 
@@ -30,7 +31,7 @@ export const editCharacterResolver: ResolveFn<EditCharacterStoreData> = route =>
         }
     } else {
         const db = inject(DatabaseService)
-        const sources = {
+        const sources: ForkJoinSource<EditCharacterStoreData> = {
             character: db.getById<Character>(characterId),
             sheetImage: db.getAttachment(characterId, SHEET_IMAGE_ATTACHMENT_ID)
                 .pipe(db.catchNotFound())

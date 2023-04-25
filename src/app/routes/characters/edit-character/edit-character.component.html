@@ -6,7 +6,8 @@
               class="btn btn-secondary" data-card-btn>
         <i class="bi bi-x-lg"></i> Cancel
       </button>
-      <app-two-factor-button btnClass="btn-danger" (confirmed)="onDelete()" confirmText="Yes, delete this character!"
+      <app-two-factor-button btnClass="btn-outline-danger" (confirmed)="onDelete()"
+                             confirmText="Yes, delete this character!"
                              data-card-btn="">
         <i class="bi bi-trash"></i> Delete
       </app-two-factor-button>
@@ -239,9 +240,8 @@
           </app-card>
         </div>
         <div class="col-sm-6">
-          <app-card *ngIf="store.sheetImageObjUrl$ | async as objUrl" class="mb-3">
-            <!--suppress AngularNgOptimizedImage -->
-            <img class="img-sheet-image" [src]="objUrl" alt="Sheet Image"/>
+          <app-card *ngIf="store.sheetImage$ | async as imgAtt" class="mb-3">
+            <app-attachment-img [attachment]="imgAtt" [alt]="store.name$ | async" fitContainer></app-attachment-img>
           </app-card>
           <ng-container *ngIf="store.sheetImage$ | async | not" [ngTemplateOutlet]="bioTpl"></ng-container>
         </div>

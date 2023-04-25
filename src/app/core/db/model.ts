@@ -8,6 +8,12 @@ export interface Model extends PouchDBCore.IdMeta, PouchDBCore.RevisionIdMeta {
     modelType: ModelType
 }
 
+export interface Attachment {
+    name: string
+    contentType: string
+    content: Blob
+}
+
 // Characters
 export interface Character extends Model {
     modelType: 'CHARACTER'
@@ -28,15 +34,17 @@ export interface CharacterAbility {
     magicResistance: number
 }
 
+export type CharacterListView = Omit<Character, 'abilities'>
 export const SHEET_IMAGE_ATTACHMENT_ID = 'sheetImage'
 
 // Stories
-type StoryStatus = 'CONCEPT' | 'DRAFT' | 'DONE'
+export type StoryStatus = 'CONCEPT' | 'DRAFT' | 'DONE'
 
 export interface Story extends Model {
     modelType: 'STORY'
     title: string,
     status: StoryStatus
+    draftText: string
     plotPoints: StoryPlotPoint[]
     involvedCharacters: string[]
 }
