@@ -3,7 +3,7 @@ import {EntityState} from '@ngrx/entity'
 import {map, mergeMap, Observable, takeUntil, tap} from 'rxjs'
 
 import {Character} from '@core/db/model'
-import {AppComponentStore} from '@core/ngrx'
+import {AppComponentStore, AppEntityAdapter} from '@core/ngrx'
 import {strSort} from '@core/util/sorters'
 
 import {charactersOverviewResolver} from './characters-overview.resolver'
@@ -19,12 +19,11 @@ export interface CharactersOverviewStoreData {
 @Injectable()
 export class CharactersOverviewStore extends AppComponentStore<CharactersOverviewStoreState> {
 
-    private readonly characterAdapter = this.createEntityAdapter<Character>(strSort(e => e.name))
-    private readonly characterSelectors = this.characterAdapter.getSelectors()
+    private readonly characterAdapter: AppEntityAdapter<Character> = this.createEntityAdapter<Character>(e => e._id, strSort(e => e.name))
 
     public readonly characters$: Observable<Character[]> = this
         .select(s => s.characters)
-        .pipe(map(this.characterSelectors.selectAll))
+        .pipe(map(this.characterAdapter.selectAll))
 
     constructor() {
         super()

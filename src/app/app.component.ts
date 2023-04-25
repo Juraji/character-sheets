@@ -28,5 +28,9 @@ export class AppComponent {
             label: 'Characters',
             route: '/characters'
         },
+        {
+            label: 'Stories',
+            route: '/stories'
+        },
     ]
 }

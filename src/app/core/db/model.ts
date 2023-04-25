@@ -1,8 +1,8 @@
 import PouchDB from 'pouchdb'
 
-import PouchDBCore = PouchDB.Core
+import PouchDBCore = PouchDB.Core;
 
-export type ModelType = 'CHARACTER'
+export type ModelType = 'CHARACTER' | 'STORY'
 
 export interface Model extends PouchDBCore.IdMeta, PouchDBCore.RevisionIdMeta {
     modelType: ModelType
@@ -29,3 +29,19 @@ export interface CharacterAbility {
 }
 
 export const SHEET_IMAGE_ATTACHMENT_ID = 'sheetImage'
+
+// Stories
+type StoryStatus = 'CONCEPT' | 'DRAFT' | 'DONE'
+
+export interface Story extends Model {
+    modelType: 'STORY'
+    title: string,
+    status: StoryStatus
+    plotPoints: StoryPlotPoint[]
+    involvedCharacters: string[]
+}
+
+export interface StoryPlotPoint {
+    order: number
+    description: string
+}

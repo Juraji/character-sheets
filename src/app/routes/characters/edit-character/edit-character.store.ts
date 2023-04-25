@@ -3,7 +3,7 @@ import {EntityState} from '@ngrx/entity'
 import {map, mergeMap, Observable, pairwise, startWith, takeUntil, tap, withLatestFrom} from 'rxjs'
 
 import {Character, CharacterAbility, Model, ModelType, SHEET_IMAGE_ATTACHMENT_ID} from '@core/db/model'
-import {AppComponentStore} from '@core/ngrx'
+import {AppComponentStore, AppEntityAdapter} from '@core/ngrx'
 import {filterNotEmpty, filterNotNull, firstNotNull} from '@core/rxjs'
 import {objectOmit, objectOmitNulls} from '@core/util/objects'
 import {strSort} from '@core/util/sorters'
@@ -28,8 +28,7 @@ export interface EditCharacterStoreData {
 @Injectable()
 export class EditCharacterStore extends AppComponentStore<EditCharacterStoreState> {
 
-    private readonly abilityAdapter = this.createCustomIdEntityAdapter<CharacterAbility>(e => e.label, strSort(e => e.label))
-    private readonly abilitySelectors = this.abilityAdapter.getSelectors()
+    private readonly abilityAdapter: AppEntityAdapter<CharacterAbility> = this.createEntityAdapter(e => e.label, strSort(e => e.label))
 
     public readonly characterId$: Observable<Optional<string>> = this.select(s => s.id)
     public readonly characterRev$: Observable<Optional<string>> = this.select(s => s.rev)
@@ -64,7 +63,7 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
 
     public readonly abilities$: Observable<CharacterAbility[]> = this
         .select(s => s.abilities)
-        .pipe(map(this.abilitySelectors.selectAll))
+        .pipe(map(this.abilityAdapter.selectAll))
 
     constructor() {
         super()

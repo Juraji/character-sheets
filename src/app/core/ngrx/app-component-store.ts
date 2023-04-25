@@ -5,7 +5,9 @@ import {Comparer, createEntityAdapter, EntityAdapter, IdSelector} from '@ngrx/en
 import {isObservable, ObservableInput} from 'rxjs'
 
 import {DatabaseService} from '@core/db/database.service'
-import {Model} from '@core/db/model'
+
+export type AppEntityAdapter<T, ADP extends EntityAdapter<T> = EntityAdapter<T>, SEL = ReturnType<ADP['getSelectors']>> =
+    Omit<ADP, 'getSelectors'> & { [P in keyof SEL]: SEL[P] }
 
 export abstract class AppComponentStore<T extends object> extends ComponentStore<T> {
     protected readonly db: DatabaseService
@@ -22,19 +24,9 @@ export abstract class AppComponentStore<T extends object> extends ComponentStore
         this.router = inject(Router)
     }
 
-
-    /**
-     * Create an NGRX {@see EntityAdapter} for CBN entities.
-     */
-    protected createEntityAdapter<T extends Model>(sortComparer?: Comparer<T>): EntityAdapter<T> {
-        return this.createCustomIdEntityAdapter<T>(e => e._id, sortComparer)
-    }
-
-    /**
-     * Create an NGRX {@see EntityAdapter} for custom entities.
-     */
-    protected createCustomIdEntityAdapter<T>(selectId: IdSelector<T>, sortComparer?: Comparer<T>): EntityAdapter<T> {
-        return createEntityAdapter<T>({selectId, sortComparer})
+    protected createEntityAdapter<T>(selectId: IdSelector<T>, sortComparer?: Comparer<T>): AppEntityAdapter<T> {
+        const adapter: EntityAdapter<T> = createEntityAdapter<T>({selectId, sortComparer})
+        return {...adapter, ...adapter.getSelectors()} as AppEntityAdapter<T>
     }
 
     protected runResolve<R>(resolve: ResolveFn<R>): ObservableInput<R> {
