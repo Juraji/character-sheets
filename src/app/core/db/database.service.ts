@@ -65,8 +65,8 @@ export class DatabaseService implements OnDestroy {
             .pipe(map(r => ({...doc, _id: r.id, _rev: r.rev}) as T))
     }
 
-    public delete<T extends Model>(doc: T): Observable<boolean> {
-        return defer(() => this.pouchDb.remove(doc))
+    public delete(docId: string, docRev: string): Observable<boolean> {
+        return defer(() => this.pouchDb.remove({_id: docId, _rev: docRev}))
             .pipe(map(r => !!r?.ok))
     }
 

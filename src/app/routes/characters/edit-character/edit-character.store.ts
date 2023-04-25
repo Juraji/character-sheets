@@ -88,9 +88,8 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
         return this.characterId$
             .pipe(
                 firstNotNull(),
-                withLatestFrom(this.characterRev$.pipe(filterNotNull()), this.modelType$.pipe(filterNotNull())),
-                mergeMap(([_id, _rev, modelType]) =>
-                    this.db.delete({_id, _rev, modelType})),
+                withLatestFrom(this.characterRev$.pipe(filterNotNull())),
+                mergeMap(([id, rev]) => this.db.delete(id, rev)),
                 tap(() => this.patchState({id: null, rev: null}))
             )
     }

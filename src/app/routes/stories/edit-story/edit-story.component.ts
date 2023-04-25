@@ -69,6 +69,9 @@ export class EditStoryComponent implements OnInit, OnDestroy {
     }
 
     public onDeleteStory() {
-
+        this.store
+            .delete()
+            .subscribe(() => this.router
+                .navigate(['../../overview'], {relativeTo: this.activatedRoute, replaceUrl: true}))
     }
 }

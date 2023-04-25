@@ -4,7 +4,7 @@ import {map, mergeMap, Observable, takeUntil, tap, withLatestFrom} from 'rxjs';
 
 import {Attachment, CharacterListView, Model, Story, StoryPlotPoint} from '@core/db/model';
 import {AppComponentStore, AppEntityAdapter} from '@core/ngrx';
-import {filterNotNull} from '@core/rxjs';
+import {filterNotNull, firstNotNull} from '@core/rxjs';
 import {objectOmit} from '@core/util/objects';
 import {strSort} from '@core/util/sorters';
 
@@ -83,6 +83,15 @@ export class EditStoryStore extends AppComponentStore<EditStoryStoreState> {
                 rev: story._rev,
                 story: objectOmit(story, '_id', '_rev', 'plotPoints', 'involvedCharacters'),
             }))
+        )
+    }
+
+    public delete() {
+        return this.storyId$.pipe(
+            firstNotNull(),
+            withLatestFrom(this.storyRev$.pipe(filterNotNull())),
+            mergeMap(([id, rev]) => this.db.delete(id, rev)),
+            tap(() => this.patchState({id: null, rev: null}))
         )
     }
 
