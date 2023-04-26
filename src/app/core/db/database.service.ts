@@ -49,8 +49,8 @@ export class DatabaseService implements OnDestroy {
         return defer(() => this.pouchDb.get<T>(documentId))
     }
 
-    public getAllByType<T extends Model>(modelType: ModelType): Observable<T[]> {
-        const findRequest: PouchDB.Find.FindRequest<T> = {selector: {modelType}}
+    public getAllByType<T extends Model>(modelType: ModelType, fields?: string[]): Observable<T[]> {
+        const findRequest: PouchDB.Find.FindRequest<T> = {selector: {modelType}, fields}
         // noinspection JSVoidFunctionReturnValueUsed
         return defer(() => this.pouchDb.find(findRequest) as Promise<PouchDB.Find.FindResponse<T>>)
             .pipe(map(res => res.docs))

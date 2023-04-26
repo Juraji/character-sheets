@@ -81,7 +81,7 @@ export class EditStoryStore extends AppComponentStore<EditStoryStoreState> {
             tap(story => this.patchState({
                 id: story._id,
                 rev: story._rev,
-                story: objectOmit(story, '_id', '_rev', 'plotPoints', 'involvedCharacters'),
+                story: this.storeStoreOf(story),
             }))
         )
     }
@@ -99,10 +99,14 @@ export class EditStoryStore extends AppComponentStore<EditStoryStoreState> {
         this.patchState(s => ({
             id: sd.story._id,
             rev: sd.story._rev,
-            story: objectOmit(sd.story, '_id', '_rev', 'plotPoints', 'involvedCharacters'),
+            story: this.storeStoreOf(sd.story),
             plotPoints: this.plotPointAdapter.setAll(sd.story.plotPoints, s.plotPoints),
             involvedCharacters: this.characterAdapter.setAll(sd.involvedCharacters, s.involvedCharacters),
             attachments: this.attachmentAdapter.setAll(sd.attachments, s.attachments)
         }))
+    }
+
+    private storeStoreOf(story: Nullable<Story, keyof Model>): StoreStory {
+        return objectOmit(story, '_id', '_rev', 'plotPoints', 'involvedCharacters')
     }
 }

@@ -18,10 +18,10 @@ export interface Attachment {
 export interface Character extends Model {
     modelType: 'CHARACTER'
     name: string
-    bio: string
     age: number
     species: string
     combatClass: string
+    bio: string
     abilities: CharacterAbility[]
 }
 
@@ -34,7 +34,8 @@ export interface CharacterAbility {
     magicResistance: number
 }
 
-export type CharacterListView = Omit<Character, 'abilities'>
+export type CharacterListView = Omit<Character, 'bio' | 'abilities'>
+
 export const SHEET_IMAGE_ATTACHMENT_ID = 'sheetImage'
 
 // Stories

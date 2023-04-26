@@ -2,26 +2,26 @@ import {Injectable} from '@angular/core'
 import {EntityState} from '@ngrx/entity'
 import {map, mergeMap, Observable, takeUntil, tap} from 'rxjs'
 
-import {Character} from '@core/db/model'
+import {CharacterListView} from '@core/db/model'
 import {AppComponentStore, AppEntityAdapter} from '@core/ngrx'
 import {strSort} from '@core/util/sorters'
 
 import {charactersOverviewResolver} from './characters-overview.resolver'
 
 interface CharactersOverviewStoreState {
-    characters: EntityState<Character>
+    characters: EntityState<CharacterListView>
 }
 
 export interface CharactersOverviewStoreData {
-    characters: Character[]
+    characters: CharacterListView[]
 }
 
 @Injectable()
 export class CharactersOverviewStore extends AppComponentStore<CharactersOverviewStoreState> {
 
-    private readonly characterAdapter: AppEntityAdapter<Character> = this.createEntityAdapter<Character>(e => e._id, strSort(e => e.name))
+    private readonly characterAdapter: AppEntityAdapter<CharacterListView> = this.createEntityAdapter(e => e._id, strSort(e => e.name))
 
-    public readonly characters$: Observable<Character[]> = this
+    public readonly characters$: Observable<CharacterListView[]> = this
         .select(s => s.characters)
         .pipe(this.characterAdapter.selectAll)
 

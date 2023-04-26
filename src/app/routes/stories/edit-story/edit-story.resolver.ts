@@ -3,9 +3,9 @@ import {ResolveFn} from '@angular/router';
 import {forkJoin, map} from 'rxjs';
 
 import {DatabaseService} from '@core/db/database.service';
-import {Character, CharacterListView, Model, Story} from '@core/db/model';
-import {ForkJoinSource, mapList} from '@core/rxjs';
-import {objectOmit} from '@core/util/objects';
+import {CharacterListView, Model, Story} from '@core/db/model';
+import {ForkJoinSource} from '@core/rxjs';
+import {isNotNullable} from '@core/util/objects';
 
 import {EditStoryStoreData} from './edit-story.store';
 
@@ -35,14 +35,14 @@ export const editStoryResolver: ResolveFn<EditStoryStoreData> = route => {
         return forkJoin<ForkJoinSource<EditStoryStoreData>>({
             story: db.getById<Story>(storyId),
             availableCharacters: db
-                .getAllByType<Character>('CHARACTER')
-                .pipe(mapList(c => objectOmit(c, 'abilities'))),
+                .getAllByType<CharacterListView>('CHARACTER', ['name', 'age', 'species', 'combatClass']),
             involvedCharacters: [[]],
             attachments: db.getAllAttachments(storyId),
         }).pipe(map(res => ({
                 ...res,
                 involvedCharacters: res.story.involvedCharacters
                     .map(cId => res.availableCharacters.find(c => c._id === cId) as CharacterListView)
+                    .filter(isNotNullable)
             })
         ))
     }
