@@ -1,18 +1,18 @@
 <div class="container">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Characters</h1>
+    <h1 translate="characters.labels.characters"></h1>
     <button class="add-character-btn btn btn-lg btn-primary" routerLink="../edit/new">
-      <i class="bi bi-plus-lg"></i>
+      <i class="bi bi-plus-lg"></i>&nbsp;<span translate="edit.buttons.common.add"></span>
     </button>
   </div>
 
   <div class="row">
-    <div class="col-sm-4" *ngFor="let c of store.characters$ | async">
-      <app-card>
+    <div class="col-sm-4 mb-4" *ngFor="let c of store.characters$ | async">
+      <app-card class="shadow">
         <h4 class="card-title" data-card-title="">{{c.name}}</h4>
         <!--suppress TypeScriptUnresolvedReference -->
         <button class="btn btn-secondary" [routerLink]="['../edit', c._id]" data-card-btn>
-          <i class="bi bi-search"></i>
+          <i class="bi bi-search"></i>&nbsp;<span translate="edit.buttons.common.view"></span>
         </button>
         <span class="text-muted">{{c.species}}, {{c.combatClass}}</span>
       </app-card>

@@ -1,21 +1,23 @@
 <div class="container">
   <form [formGroup]="formGroup" (submit)="onFormSubmit()">
     <app-card>
-      <h2 class="card-title" data-card-title=""><span class="text-muted">Story: </span>{{store.title$ | async}}</h2>
-      <app-two-factor-button btnClass="btn-outline-danger" (confirmed)="onDeleteStory()"
-                             confirmText="Yes, delete this story!"
-                             data-card-btn="">
-        <i class="bi bi-trash"></i> Delete
+      <h2 class="card-title" data-card-title="">
+        <span class="text-muted"><span translate="stories.labels.story"></span>: </span>{{store.title$ | async}}
+      </h2>
+      <app-two-factor-button btnClass="btn-outline-danger" (confirmed)="onDeleteStory()" data-card-btn="">
+        <i class="bi bi-trash"></i>&nbsp;<span translate="edit.buttons.common.delete"></span>
       </app-two-factor-button>
       <button type="submit" class="btn btn-primary" data-card-btn=""
               *ngIf="editorActive$ | async"
               [disabled]="formGroup.invalid">
-        <i class="bi bi-save"></i> Save
+        <i class="bi bi-save"></i>&nbsp;<span translate="edit.buttons.common.save"></span>
       </button>
       <button type="button" (click)="editorActive$.toggle()"
               class="btn btn-secondary" data-card-btn="">
-        <span *ngIf="editorActive$ | async"><i class="bi bi-x-lg"></i> Cancel</span>
-        <span *ngIf="editorActive$ | async | not"><i class="bi bi-pencil-fill"></i> Edit</span>
+        <span *ngIf="editorActive$ | async">
+          <i class="bi bi-x-lg"></i>&nbsp;<span translate="edit.buttons.common.cancel"></span></span>
+        <span *ngIf="editorActive$ | async | not">
+          <i class="bi bi-pencil-fill"></i>&nbsp;<span translate="edit.buttons.common.edit"></span></span>
       </button>
 
       <div class="row">
@@ -23,20 +25,20 @@
           <div class="row">
             <div class="col-sm-9">
               <div class="mb-3">
-                <label for="storyTitleInput" class="form-label">Title</label>
+                <label for="storyTitleInput" class="form-label" translate="stories.properties.title"></label>
                 <input class="form-control" id="storyTitleInput" aria-describedby="storyTitleInputHelp"
                        formControlName="title">
-                <div id="storyTitleInputHelp" class="form-text">Story or chapter title.</div>
+                <div id="storyTitleInputHelp" class="form-text" translate="edit.form.stories.title.description"></div>
               </div>
             </div>
             <div class="col-sm-3">
               <div class="mb-3">
-                <label for="storyStatusInput" class="form-label">Status</label>
+                <label for="storyStatusInput" class="form-label" translate="stories.properties.status"></label>
                 <select class="form-control" id="storyStatusInput"
                         formControlName="status">
-                  <option value="CONCEPT">Concept</option>
-                  <option value="DRAFT">Draft</option>
-                  <option value="DONE">Done</option>
+                  <option value="DRAFT" translate="stories.properties.status.value.draft"></option>
+                  <option value="REVIEW" translate="stories.properties.status.value.review"></option>
+                  <option value="DONE" translate="stories.properties.status.value.done"></option>
                 </select>
               </div>
             </div>
@@ -44,7 +46,8 @@
           <div class="mb-3">
             <textarea class="form-control" id="storyDrafTextInput" aria-describedby="storyDrafTextInputHelp"
                       rows="20" formControlName="draftText"></textarea>
-            <div id="storyDrafTextInputHelp" class="form-text">A space for you to draft up story.</div>
+            <div id="storyDrafTextInputHelp" class="form-text"
+                 translate="edit.form.stories.draftText.description"></div>
           </div>
         </div>
       </div>

@@ -1,28 +1,30 @@
 <div class="container">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Stories</h1>
+    <h1 translate="stories.labels.stories"></h1>
     <button class="add-character-btn btn btn-lg btn-primary" routerLink="../edit/new">
-      <i class="bi bi-plus-lg"></i>
+      <i class="bi bi-plus-lg"></i>&nbsp;<span translate="edit.buttons.common.add"></span>
     </button>
   </div>
 
   <table class="table stories-table">
     <thead>
     <tr>
-      <th scope="col" class="status-column">Status</th>
-      <th scope="col" class="title-column">Title</th>
+      <th scope="col" class="status-column" translate="stories.properties.title"></th>
+      <th scope="col" class="title-column" translate="stories.properties.status"></th>
       <th scope="col" class="actions-column">&nbsp;</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let s of store.stories$ | async">
-      <td class="status-column" [ngClass]="[s.status]">{{s.status | titlecase}}</td>
+      <td class="status-column" [ngClass]="[s.status]">
+        {{'stories.properties.status.value.' + (s.status | lowercase) | translate}}
+      </td>
       <td class="title-column">{{s.title}}</td>
       <td class="actions-column">
         <div class="btn-group btn-group-sm">
           <!--suppress TypeScriptUnresolvedReference -->
-          <a class="btn btn-primary" [routerLink]="['../edit', s._id]">
-            <i class="bi bi-door-open"></i>
+          <a class="btn btn-secondary" [routerLink]="['../edit', s._id]">
+            <i class="bi bi-search"></i>&nbsp;<span translate="edit.buttons.common.view"></span>
           </a>
         </div>
       </td>
@@ -30,7 +32,7 @@
     </tbody>
     <tbody *ngIf="store.stories$ | async | not">
     <tr>
-      <td colspan="3" class="text-muted">No stories written yet</td>
+      <td colspan="3" class="text-muted" translate="edit.form.stories.noStories"></td>
     </tr>
     </tbody>
   </table>

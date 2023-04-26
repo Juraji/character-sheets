@@ -1,12 +1,12 @@
 <nav class="navbar navbar-expand navbar navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" routerLink="/">Character Sheets</a>
+    <a class="navbar-brand" routerLink="/" translate="app.title"></a>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-link" *ngFor="let item of menuItems"
            appAriaRouterLinkCurrent
            routerLinkActive="active"
-           [routerLink]="item.route">{{item.label}}</a>
+           [routerLink]="item.route">{{item.label | translate}}</a>
       </div>
     </div>
   </div>

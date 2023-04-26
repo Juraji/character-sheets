@@ -5,11 +5,11 @@
     .status-column {
       width: 5rem;
 
-      &.CONCEPT {
+      &.DRAFT {
         color: $blue-400;
       }
 
-      &.DRAFT {
+      &.REVIEW {
         color: $orange-400;
       }
 
@@ -18,7 +18,7 @@
       }
     }
     .actions-column {
-      width: 5rem;
+      text-align: right;
     }
   }
 }

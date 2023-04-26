@@ -2,7 +2,7 @@ import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-
+import {TranslateModule} from '@ngx-translate/core';
 
 import {CardComponent} from '@components/card';
 import {NotPipe} from '@components/pipes';
@@ -17,7 +17,7 @@ import {EditStoryStore, StoreStory} from './edit-story.store';
 @Component({
     selector: 'app-edit-story',
     standalone: true,
-    imports: [CommonModule, CardComponent, NotPipe, ReactiveFormsModule, TwoFactorButtonComponent],
+    imports: [CommonModule, CardComponent, NotPipe, ReactiveFormsModule, TwoFactorButtonComponent, TranslateModule],
     providers: [EditStoryStore],
     templateUrl: './edit-story.component.html',
     styleUrls: ['./edit-story.component.scss'],
@@ -28,7 +28,7 @@ export class EditStoryComponent implements OnInit, OnDestroy {
 
     public readonly formGroup = new ModelFormGroup<StoreStory>({
         title: new FormControl('', [Validators.required]),
-        status: new FormControl<StoryStatus>('CONCEPT', [Validators.required]),
+        status: new FormControl<StoryStatus>('DRAFT', [Validators.required]),
         draftText: new FormControl()
     })
 

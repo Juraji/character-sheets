@@ -1,6 +1,6 @@
 import {Model} from './core';
 
-export type StoryStatus = 'CONCEPT' | 'DRAFT' | 'DONE'
+export type StoryStatus = 'DRAFT' | 'REVIEW' | 'DONE'
 
 export interface Story extends Model {
     modelType: 'STORY'

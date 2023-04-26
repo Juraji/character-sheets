@@ -2,6 +2,7 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormControl, ReactiveFormsModule, Validators} from '@angular/forms'
 import {ActivatedRoute, Router} from '@angular/router'
+import {TranslateModule} from '@ngx-translate/core';
 import {BsDropdownModule} from 'ngx-bootstrap/dropdown'
 import {map, mergeMap, tap} from 'rxjs'
 
@@ -38,7 +39,7 @@ const ABILITY_DEFAULTS: CharacterAbility = {
 @Component({
     selector: 'app-edit-character',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, CardComponent, NotPipe, BsDropdownModule, ReadOnlyFieldComponent, ArrayIndexSeqPipe, NgOptimizedImage, TwoFactorButtonComponent, AttachmentImgComponent],
+    imports: [CommonModule, TranslateModule, ReactiveFormsModule, CardComponent, NotPipe, BsDropdownModule, ReadOnlyFieldComponent, ArrayIndexSeqPipe, NgOptimizedImage, TwoFactorButtonComponent, AttachmentImgComponent],
     providers: [EditCharacterStore],
     templateUrl: './edit-character.component.html',
     styleUrls: ['./edit-character.component.scss'],

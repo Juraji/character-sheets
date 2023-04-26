@@ -1,52 +1,51 @@
 <div class="container">
   <form [formGroup]="formGroup" (submit)="onFormSubmit()" *ngIf="editorActive$ | async; else viewTpl">
     <app-card>
-      <h2 class="card-title" data-card-title=""><span class="text-muted">Character: </span>{{store.name$ | async}}</h2>
-      <button type="button" (click)="editorActive$.disable()" [disabled]="store.characterIsNew$ | async"
-              class="btn btn-secondary" data-card-btn>
-        <i class="bi bi-x-lg"></i> Cancel
-      </button>
-      <app-two-factor-button btnClass="btn-outline-danger" (confirmed)="onDelete()"
-                             confirmText="Yes, delete this character!"
-                             data-card-btn="">
-        <i class="bi bi-trash"></i> Delete
+      <h2 class="card-title" data-card-title=""><span class="text-muted"><span
+        translate="characters.labels.character"></span>: </span>{{store.name$ | async}}</h2>
+      <app-two-factor-button btnClass="btn-outline-danger" (confirmed)="onDelete()" data-card-btn="">
+        <i class="bi bi-trash"></i>&nbsp;<span translate="edit.buttons.common.delete"></span>
       </app-two-factor-button>
       <button type="submit" class="btn btn-primary" data-card-btn [disabled]="formGroup.invalid">
-        <i class="bi bi-save"></i> Save
+        <i class="bi bi-save"></i>&nbsp;<span translate="edit.buttons.common.save"></span>
+      </button>
+      <button type="button" (click)="editorActive$.disable()" [disabled]="store.characterIsNew$ | async"
+              class="btn btn-secondary" data-card-btn>
+        <i class="bi bi-x-lg"></i>&nbsp;<span translate="edit.buttons.common.cancel"></span>
       </button>
 
       <div class="row">
         <div class="col-sm-6">
           <div class="mb-3">
-            <label for="characterNameInput" class="form-label">Name</label>
+            <label for="characterNameInput" class="form-label" translate="characters.properties.name"></label>
             <input class="form-control" id="characterNameInput" aria-describedby="characterNameInputHelp"
                    formControlName="name">
-            <div id="characterNameInputHelp" class="form-text">A catchy name for your character.</div>
+            <div id="characterNameInputHelp" class="form-text" translate="edit.form.characters.name.description"></div>
           </div>
           <div class="mb-3">
-            <label for="characterAgeInput" class="form-label">Age</label>
+            <label for="characterAgeInput" class="form-label" translate="characters.properties.age"></label>
             <input class="form-control" type="number" id="characterAgeInput" aria-describedby="characterDobInputHelp"
                    formControlName="age">
-            <div id="characterAgeInputHelp" class="form-text">It's just a number.</div>
+            <div id="characterAgeInputHelp" class="form-text" translate="edit.form.characters.age.description"></div>
           </div>
           <div class="mb-3">
-            <label for="characterSpeciesInput" class="form-label">Species</label>
+            <label for="characterSpeciesInput" class="form-label" translate="characters.properties.species"></label>
             <div class="input-group">
               <input class="form-control" id="characterSpeciesInput"
                      aria-describedby="characterSpeciesInputHelp"
                      formControlName="species">
               <div class="btn-group" dropdown>
-                <button class="btn btn-secondary dropdown-toggle" dropdownToggle
+                <button class="btn btn-secondary dropdown-toggle white-space-pre-line" dropdownToggle
                         aria-controls="characterSpeciesInputDefaultsMenu"
                         type="button">
-                  Default&nbsp;<span class="caret"></span>
+                  <span translate="edit.form.characters.common.defaults.btn"></span>&nbsp;<span class="caret"></span>
                 </button>
                 <ul id="characterSpeciesInputDefaultsMenu" *dropdownMenu class="dropdown-menu"
-                    role="menu" aria-labelledby="button-basic">
-                  <li class="disabled"><a class="dropdown-item disabled">
-                    Select using left-click or<br/>
-                    use right-click to append.
-                  </a></li>
+                    role="menu" aria-labelledby="characterSpeciesInputDefaultsMenu">
+                  <li class="disabled">
+                    <a class="dropdown-item disabled"
+                       translate="edit.form.characters.common.defaults.help"></a>
+                  </li>
                   <li role="menuitem" *ngFor="let s of defaultSpecies">
                     <a class="dropdown-item" (click)="onUseSpecies(s)"
                        (contextmenu)="$event.preventDefault();onUseSpecies(s, true)">{{s}}</a>
@@ -54,26 +53,29 @@
                 </ul>
               </div>
             </div>
-            <div id="characterSpeciesInputHelp" class="form-text">Characters have a species or at least a race.</div>
+            <div id="characterSpeciesInputHelp" class="form-text"
+                 translate="edit.form.characters.species.description"></div>
           </div>
           <div class="mb-3">
-            <label for="characterCombatClassInput" class="form-label">Combat Class</label>
+            <label for="characterCombatClassInput" class="form-label"
+                   translate="characters.properties.combatClass"></label>
             <div class="input-group">
               <input class="form-control" id="characterCombatClassInput"
                      aria-describedby="characterCombatClassInputHelp"
                      formControlName="combatClass">
               <div class="btn-group" dropdown>
                 <button class="btn btn-secondary dropdown-toggle" dropdownToggle
+                        id="characterCombatClassInputDefaultsMenuButton"
                         aria-controls="characterCombatClassInputDefaultsMenu"
                         type="button">
-                  Default&nbsp;<span class="caret"></span>
+                  <span translate="edit.form.characters.common.defaults.btn"></span>&nbsp;<span class="caret"></span>
                 </button>
                 <ul id="characterCombatClassInputDefaultsMenu" *dropdownMenu class="dropdown-menu"
-                    role="menu" aria-labelledby="button-basic">
-                  <li class="disabled"><a class="dropdown-item disabled">
-                    Select using left-click or<br/>
-                    use right-click to append.
-                  </a></li>
+                    role="menu" aria-labelledby="characterCombatClassInputDefaultsMenuButton">
+                  <li class="disabled">
+                    <a class="dropdown-item disabled white-space-pre-line"
+                       translate="edit.form.characters.common.defaults.help"></a>
+                  </li>
                   <li role="menuitem" *ngFor="let cl of defaultCombatClasses">
                     <a class="dropdown-item" (click)="onUseCombatClass(cl)"
                        (contextmenu)="$event.preventDefault();onUseCombatClass(cl, true)">{{cl}}</a>
@@ -81,109 +83,114 @@
                 </ul>
               </div>
             </div>
-            <div id="characterCombatClassInputHelp" class="form-text">Which combat style would this character prefer?
-            </div>
+            <div id="characterCombatClassInputHelp" class="form-text" translate=""></div>
           </div>
         </div>
         <div class="col-sm-6">
           <div class="mb-3" *ngIf="store.characterIsNew$ | async | not">
-            <label for="characterImageInput" class="form-label">Sheet Image</label>
+            <label for="characterImageInput" class="form-label" translate="characters.properties.sheetImage"></label>
             <div class="input-group">
               <input type="file" id="characterImageInput" class="form-control" accept="image/*"
-                     (change)="onSetSheetImage($event)"/>
+                     (change)="onSetSheetImage($event)" aria-describedby="characterImageInputHelp"/>
               <app-two-factor-button
                 *ngIf="store.sheetImage$ | async"
                 (confirmed)="onRemoveSheetImage()"
-                btnClass="btn-danger"
-                confirmText="Yes, remove the image!" data-card-btn="">
-                <i class="bi bi-trash"></i> Remove image
+                btnClass="btn-danger" data-card-btn="">
+                <i class="bi bi-trash"></i>&nbsp;<span translate="edit.form.characters.sheetImage.remove.btn"></span>
               </app-two-factor-button>
             </div>
+            <div id="characterImageInputHelp" class="form-text"
+                 translate="edit.form.characters.sheetImage.description"></div>
           </div>
           <div class="mb-3">
-            <label for="characterBioInput" class="form-label">Bio</label>
+            <label for="characterBioInput" class="form-label" translate="characters.properties.bio"></label>
             <textarea rows="15" id="characterBioInput" class="form-control" aria-describedby="characterBioInputHelp"
                       formControlName="bio"></textarea>
-            <div id="characterBioInputHelp" class="form-text">How did your character come to be?</div>
+            <div id="characterBioInputHelp" class="form-text" translate="edit.form.characters.bio.description"></div>
           </div>
         </div>
       </div>
       <ng-container formArrayName="abilities">
         <div class="d-flex justify-content-between mb-3">
-          <h4>Abilities</h4>
+          <h4 translate="characters.properties.abilities"></h4>
           <div class="d-flex">
             <button type="button" class="btn btn-sm btn-outline-primary" (click)="onAddAbilityTrait()">
               <i class="bi bi-plus-lg"></i>
             </button>
           </div>
         </div>
-        <span *ngIf="abilitiesFormArray.length === 0" class="text-muted">No abilities defined yet.</span>
+        <span *ngIf="abilitiesFormArray.length === 0" class="text-muted"
+              translate="edit.form.characters.abilities.empty"></span>
         <div class="row">
           <app-card class="col-sm-6 mb-3 shadow-sm" *ngFor="let i of abilitiesFormArray.length | arrayIndexSeq"
                     [formGroupName]="i">
             <h6 data-card-title="">&nbsp;</h6>
-            <button type="button" class="btn btn-sm btn-outline-danger" data-card-btn (click)="onRemoveAbilityTrait(i)">
-              <i class="bi bi-x-lg"></i>
-            </button>
+            <app-two-factor-button
+              *ngIf="store.sheetImage$ | async"
+              (confirmed)="onRemoveAbilityTrait(i)"
+              btnClass="btn-danger" data-card-btn="">
+              <i class="bi bi-trash"></i>
+            </app-two-factor-button>
 
             <div class="mb-3">
-              <label [for]="'abilityTLabelraitInput-' + i" class="form-label">Label</label>
-              <input class="form-control" [id]="'abilityTLabelraitInput-' + i"
+              <label [for]="'abilityLabelTraitInput-' + i" class="form-label"
+                     translate="characters.properties.abilities.label"></label>
+              <input class="form-control" [id]="'abilityLabelTraitInput-' + i"
                      [attr.aria-describedby]="'abilityTraitLabelInputHelp-' + i"
                      formControlName="label">
-              <div [id]="'abilityTraitLabelInputHelp-' + i" class="form-text">A short name for this trait.</div>
+              <div [id]="'abilityTraitLabelInputHelp-' + i" class="form-text"
+                   translate="edit.form.characters.label.description"></div>
             </div>
             <div class="mb-3">
-              <label [for]="'abilityTraitDescriptionInput-' + i" class="form-label">Description</label>
+              <label [for]="'abilityTraitDescriptionInput-' + i" class="form-label"
+                     translate="characters.properties.abilities.description"></label>
               <textarea class="form-control" [id]="'abilityTraitDescriptionInput-' + i"
                         [attr.aria-describedby]="'abilityTraitDescriptionInputHelp-' + i"
                         formControlName="description"></textarea>
-              <div [id]="'abilityTraitDescriptionInputHelp-' + i" class="form-text">Describe this trait more
-                explicitly.
-              </div>
+              <div [id]="'abilityTraitDescriptionInputHelp-' + i" class="form-text"
+                   translate="edit.form.characters.description.description"></div>
             </div>
             <div class="row mb-3">
               <div class="col-sm-6">
-                <label [for]="'abilityTraitHitDieInput-' + i" class="form-label">Hit Die</label>
+                <label [for]="'abilityTraitHitDieInput-' + i" class="form-label"
+                       translate="characters.properties.abilities.hitDie"></label>
                 <div class="input-group">
                   <span class="input-group-text">d</span>
                   <input class="form-control" [id]="'abilityTraitHitDieInput-' + i"
                          [attr.aria-describedby]="'abilityTraitHitDieInputHelp-' + i"
                          formControlName="hitDie" type="number">
                 </div>
-                <div [id]="'abilityTraitHitDieInputHelp-' + i" class="form-text">What die should be used to generate a
-                  hit?
-                </div>
+                <div [id]="'abilityTraitHitDieInputHelp-' + i" class="form-text"
+                     translate="edit.form.characters.hitDie.description"></div>
               </div>
               <div class="col-sm-6">
-                <label [for]="'abilityTraitBaseDamageInput-' + i" class="form-label">Base Damage</label>
+                <label [for]="'abilityTraitBaseDamageInput-' + i" class="form-label"
+                       translate="characters.properties.abilities.baseDamage"></label>
                 <input class="form-control" [id]="'abilityTraitBaseDamageInput-' + i"
                        [attr.aria-describedby]="'abilityTraitBaseDamageInputHelp-' + i"
                        formControlName="baseDamage" type="number">
-                <div [id]="'abilityTraitBaseDamageInputHelp-' + i" class="form-text">How much damage does this ability
-                  inflict without buffs or effects.
-                </div>
+                <div [id]="'abilityTraitBaseDamageInputHelp-' + i" class="form-text"
+                     translate="edit.form.characters.baseDamage.description"></div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-6">
-                <label [for]="'abilityTraitShieldBufInput-' + i" class="form-label">Shield Buff</label>
+                <label [for]="'abilityTraitShieldBufInput-' + i" class="form-label"
+                       translate="characters.properties.abilities.shieldBuf"></label>
                 <input class="form-control" [id]="'abilityTraitShieldBufInput-' + i"
                        [attr.aria-describedby]="'abilityTraitShieldBufInputHelp-' + i"
                        formControlName="shieldBuf" type="number">
-                <div [id]="'abilityTraitShieldBufInputHelp-' + i" class="form-text">How much shield buff does this
-                  ability
-                  generate?
-                </div>
+                <div [id]="'abilityTraitShieldBufInputHelp-' + i" class="form-text"
+                     translate="edit.form.characters.shieldBuf.description"></div>
               </div>
               <div class="col-sm-6">
-                <label [for]="'abilityTraitMagicResistanceInput-' + i" class="form-label">Magic Resistance</label>
+                <label [for]="'abilityTraitMagicResistanceInput-' + i" class="form-label"
+                       translate="characters.properties.abilities.magicResistance"></label>
                 <input class="form-control" [id]="'abilityTraitMagicResistanceInput-' + i"
                        [attr.aria-describedby]="'abilityTraitMagicResistanceInputHelp-' + i"
                        formControlName="magicResistance" type="number">
-                <div [id]="'abilityTraitMagicResistanceInputHelp-' + i" class="form-text">How much magic resistance does
-                  this ability have?
-                </div>
+                <div [id]="'abilityTraitMagicResistanceInputHelp-' + i" class="form-text"
+                     translate="edit.form.characters.magicResistance.description"></div>
               </div>
             </div>
           </app-card>
@@ -194,39 +201,44 @@
 
   <ng-template #viewTpl>
     <app-card>
-      <h2 class="card-title" data-card-title=""><span class="text-muted">Character: </span>{{store.name$ | async}}</h2>
+      <h2 class="card-title" data-card-title=""><span class="text-muted"><span
+        translate="characters.labels.character"></span>: </span>{{store.name$ | async}}</h2>
       <button type="button" (click)="editorActive$.enable()"
               class="btn btn-secondary" data-card-btn>
-        <i class="bi bi-pencil-fill"></i> Edit
+        <i class="bi bi-pencil-fill"></i>&nbsp;<span translate="edit.buttons.common.edit"></span>
       </button>
 
       <div class="row mb-3">
         <div class="col-sm-6">
           <app-card class="mb-3">
-            <h4 data-card-title="">Info</h4>
-            <app-read-only-field inline label="Age">{{store.age$ | async}}</app-read-only-field>
-            <app-read-only-field inline label="Species">{{store.species$ | async}}</app-read-only-field>
-            <app-read-only-field inline label="Combat Class">{{store.combatClass$ | async}}</app-read-only-field>
+            <h4 data-card-title="" translate="edit.form.characters.common.info.label"></h4>
+            <app-read-only-field inline label="characters.properties.age">{{store.age$ | async}}</app-read-only-field>
+            <app-read-only-field inline
+                                 label="characters.properties.species">{{store.species$ | async}}</app-read-only-field>
+            <app-read-only-field inline
+                                 label="characters.properties.combatClass">{{store.combatClass$ | async}}</app-read-only-field>
           </app-card>
           <ng-container *ngIf="store.sheetImage$ | async" [ngTemplateOutlet]="bioTpl"></ng-container>
           <app-card class="mb-3">
-            <h4 data-card-title="">Abilities</h4>
+            <h4 data-card-title="" translate="characters.properties.abilities"></h4>
             <span *ngIf="store.abilities$ | async | not"
-                  class="text-muted">No abilities defined yet.</span>
+                  class="text-muted" translate="edit.form.characters.abilities.empty"></span>
             <ul>
-              <li *ngFor="let t of store.abilities$ | async">
+              <li *ngFor="let t of store.abilities$ | async" class="mb-3">
                 <ul class="list-unstyled">
                   <li>{{t.label}}</li>
                   <li *ngIf="t.description as desc" class="text-muted white-space-pre-line mb-2">{{desc}}</li>
                   <li>
-                    <app-read-only-field inline label="Hit Die">d{{t.hitDie}}</app-read-only-field>
+                    <app-read-only-field inline label="characters.properties.abilities.hitDie">
+                      <span>d{{t.hitDie}}</span>
+                    </app-read-only-field>
                   </li>
                   <li [ngTemplateOutlet]="coloredStat"
-                      [ngTemplateOutletContext]="{label: 'Base Damage', stat: t.baseDamage}"></li>
+                      [ngTemplateOutletContext]="{label: 'characters.properties.abilities.baseDamage', stat: t.baseDamage}"></li>
                   <li [ngTemplateOutlet]="coloredStat"
-                      [ngTemplateOutletContext]="{label: 'Shield Buff', stat: t.shieldBuf}"></li>
+                      [ngTemplateOutletContext]="{label: 'characters.properties.abilities.shieldBuf', stat: t.shieldBuf}"></li>
                   <li [ngTemplateOutlet]="coloredStat"
-                      [ngTemplateOutletContext]="{label: 'Magic Resistance', stat: t.magicResistance}"></li>
+                      [ngTemplateOutletContext]="{label: 'characters.properties.abilities.magicResistance', stat: t.magicResistance}"></li>
                 </ul>
               </li>
             </ul>
@@ -249,7 +261,7 @@
 
       <ng-template #bioTpl>
         <app-card *ngIf="store.bio$ | async as bio" class="mb-3">
-          <h4 data-card-title="">Bio</h4>
+          <h4 data-card-title="" translate="characters.properties.bio"></h4>
           <p class="white-space-pre-line">{{bio}}</p>
         </app-card>
       </ng-template>

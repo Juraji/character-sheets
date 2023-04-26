@@ -15,7 +15,7 @@ const EMPTY_STORY: Nullable<Story, keyof Model> = {
     _rev: null,
     modelType: 'STORY',
     title: '',
-    status: 'CONCEPT',
+    status: 'DRAFT',
     draftText: '',
     plotPoints: [],
     involvedCharacters: []

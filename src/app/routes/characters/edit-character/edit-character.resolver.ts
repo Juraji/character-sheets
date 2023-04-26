@@ -1,5 +1,6 @@
 import {inject} from '@angular/core'
 import {ResolveFn} from '@angular/router'
+import {TranslateService} from '@ngx-translate/core';
 import {forkJoin} from 'rxjs'
 
 import {ForkJoinSource} from '@core/rxjs';
@@ -26,8 +27,10 @@ export const editCharacterResolver: ResolveFn<EditCharacterStoreData> = route =>
     const characterId = route.paramMap.get('characterId')
 
     if (characterId === null || characterId === 'new') {
+        const name = inject(TranslateService).instant('edit.form.characters.name.default')
+
         return {
-            character: EMPTY_CHARACTER,
+            character: {...EMPTY_CHARACTER, name},
             sheetImage: null,
             abilities: []
         }
