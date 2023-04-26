@@ -2,11 +2,12 @@ import {Injectable} from '@angular/core';
 import {EntityState} from '@ngrx/entity';
 import {map, mergeMap, Observable, takeUntil, tap, withLatestFrom} from 'rxjs';
 
-import {Attachment, CharacterListView, Model, Story, StoryPlotPoint} from '@core/db/model';
 import {AppComponentStore, AppEntityAdapter} from '@core/ngrx';
 import {filterNotNull, firstNotNull} from '@core/rxjs';
 import {objectOmit} from '@core/util/objects';
 import {strSort} from '@core/util/sorters';
+import {Attachment, CharacterListView, Model, Story, StoryPlotPoint} from '@db/model';
+import {StoryService} from '@db/query';
 
 export type StoreStory = Omit<Story, keyof Model | 'plotPoints' | 'involvedCharacters'>
 
@@ -51,7 +52,7 @@ export class EditStoryStore extends AppComponentStore<EditStoryStoreState> {
         .select(s => s.involvedCharacters)
         .pipe(this.characterAdapter.selectIds)
 
-    constructor() {
+    constructor(private readonly storyService: StoryService) {
         super();
 
         this.setState({
@@ -76,8 +77,8 @@ export class EditStoryStore extends AppComponentStore<EditStoryStoreState> {
                 this.plotPoints$,
                 this.involvedCharacterIds$
             ),
-            mergeMap(([_id, _rev, plotPoints, involvedCharacters]) => this.db
-                .save<Story>({...patch, _id, _rev, modelType: 'STORY', plotPoints, involvedCharacters})),
+            mergeMap(([_id, _rev, plotPoints, involvedCharacters]) => this.storyService
+                .save({...patch, _id, _rev, plotPoints, involvedCharacters})),
             tap(story => this.patchState({
                 id: story._id,
                 rev: story._rev,
@@ -90,7 +91,7 @@ export class EditStoryStore extends AppComponentStore<EditStoryStoreState> {
         return this.storyId$.pipe(
             firstNotNull(),
             withLatestFrom(this.storyRev$.pipe(filterNotNull())),
-            mergeMap(([id, rev]) => this.db.delete(id, rev)),
+            mergeMap(([id, rev]) => this.storyService.delete(id, rev)),
             tap(() => this.patchState({id: null, rev: null}))
         )
     }

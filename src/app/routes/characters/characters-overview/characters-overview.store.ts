@@ -2,9 +2,9 @@ import {Injectable} from '@angular/core'
 import {EntityState} from '@ngrx/entity'
 import {map, mergeMap, Observable, takeUntil, tap} from 'rxjs'
 
-import {CharacterListView} from '@core/db/model'
 import {AppComponentStore, AppEntityAdapter} from '@core/ngrx'
 import {strSort} from '@core/util/sorters'
+import {CharacterListView} from '@db/model'
 
 import {charactersOverviewResolver} from './characters-overview.resolver'
 

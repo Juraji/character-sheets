@@ -4,8 +4,6 @@ import {ComponentStore} from '@ngrx/component-store'
 import {Comparer, createEntityAdapter, EntityAdapter, EntityState, IdSelector} from '@ngrx/entity'
 import {isObservable, map, ObservableInput, OperatorFunction} from 'rxjs'
 
-import {DatabaseService} from '@core/db/database.service'
-
 export type AppEntityAdapterOld<T, ADP extends EntityAdapter<T> = EntityAdapter<T>, SEL = ReturnType<ADP['getSelectors']>> =
     Omit<ADP, 'getSelectors'> & { [P in keyof SEL]: SEL[P] }
 
@@ -17,7 +15,6 @@ export interface AppEntityAdapter<T, ID extends string | number = string> extend
 }
 
 export abstract class AppComponentStore<T extends object> extends ComponentStore<T> {
-    protected readonly db: DatabaseService
     protected readonly injector: EnvironmentInjector
     protected readonly activatedRoute: ActivatedRoute
     protected readonly router: Router
@@ -25,7 +22,6 @@ export abstract class AppComponentStore<T extends object> extends ComponentStore
     protected constructor(defaultState?: T) {
         super(defaultState)
 
-        this.db = inject(DatabaseService)
         this.injector = inject(EnvironmentInjector)
         this.activatedRoute = inject(ActivatedRoute)
         this.router = inject(Router)

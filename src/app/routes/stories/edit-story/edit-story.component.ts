@@ -3,12 +3,13 @@ import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/co
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 
+
 import {CardComponent} from '@components/card';
 import {NotPipe} from '@components/pipes';
 import {TwoFactorButtonComponent} from '@components/two-factor-button';
-import {StoryStatus} from '@core/db/model';
 import {ModelFormGroup} from '@core/forms';
 import {BoolBehaviourSubject, takeUntilDestroyed} from '@core/rxjs';
+import {StoryStatus} from '@db/model';
 
 import {EditStoryStore, StoreStory} from './edit-story.store';
 

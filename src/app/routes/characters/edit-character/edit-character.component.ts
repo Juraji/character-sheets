@@ -10,10 +10,10 @@ import {CardComponent} from '@components/card'
 import {ArrayIndexSeqPipe, NotPipe} from '@components/pipes'
 import {ReadOnlyFieldComponent} from '@components/read-only-field/read-only-field.component'
 import {TwoFactorButtonComponent} from '@components/two-factor-button'
-import {CharacterAbility} from '@core/db/model'
 import {ModelFormGroup} from '@core/forms'
 import {takeUntilDestroyed} from '@core/rxjs'
 import {BoolBehaviourSubject} from '@core/rxjs/bool-behaviour-subject'
+import {CharacterAbility} from '@db/model'
 
 import {EditCharacterStore, FormCharacter} from './edit-character.store'
 

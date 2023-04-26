@@ -1,13 +1,14 @@
 import {inject} from '@angular/core';
 import {ResolveFn} from '@angular/router';
-import {forkJoin, map} from 'rxjs';
+import {forkJoin, map, mergeMap} from 'rxjs';
 
-import {DatabaseService} from '@core/db/database.service';
-import {CharacterListView, Model, Story} from '@core/db/model';
 import {ForkJoinSource} from '@core/rxjs';
 import {isNotNullable} from '@core/util/objects';
+import {CharacterListView, Model, Story} from '@db/model';
+import {CharacterService, StoryService} from '@db/query';
 
 import {EditStoryStoreData} from './edit-story.store';
+
 
 const EMPTY_STORY: Nullable<Story, keyof Model> = {
     _id: null,
@@ -21,7 +22,8 @@ const EMPTY_STORY: Nullable<Story, keyof Model> = {
 }
 
 export const editStoryResolver: ResolveFn<EditStoryStoreData> = route => {
-    const db = inject(DatabaseService)
+    const storyService = inject(StoryService)
+    const characterService = inject(CharacterService)
     const storyId = route.paramMap.get('storyId')
 
     if (storyId === 'new' || storyId == null) {
@@ -29,21 +31,24 @@ export const editStoryResolver: ResolveFn<EditStoryStoreData> = route => {
             story: EMPTY_STORY,
             involvedCharacters: [],
             attachments: [],
-            availableCharacters: []
+            availableCharacters: [] // Should load, but not needed on create
         }
     } else {
-        return forkJoin<ForkJoinSource<EditStoryStoreData>>({
-            story: db.getById<Story>(storyId),
-            availableCharacters: db
-                .getAllByType<CharacterListView>('CHARACTER', ['name', 'age', 'species', 'combatClass']),
-            involvedCharacters: [[]],
-            attachments: db.getAllAttachments(storyId),
-        }).pipe(map(res => ({
-                ...res,
-                involvedCharacters: res.story.involvedCharacters
-                    .map(cId => res.availableCharacters.find(c => c._id === cId) as CharacterListView)
-                    .filter(isNotNullable)
-            })
-        ))
+        return characterService
+            .findAll()
+            .pipe(
+                mergeMap(availableCharacters => forkJoin<ForkJoinSource<EditStoryStoreData>>({
+                    story: storyService.findById(storyId),
+                    availableCharacters: [availableCharacters],
+                    involvedCharacters: [[]],
+                    attachments: storyService.findAllAttachments(storyId)
+                })),
+                map(res => ({
+                    ...res,
+                    involvedCharacters: res.story.involvedCharacters
+                        .map(cId => res.availableCharacters.find(c => c._id === cId))
+                        .filter(isNotNullable) as CharacterListView[]
+                }))
+            )
     }
 }

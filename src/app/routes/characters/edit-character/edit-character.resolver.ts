@@ -2,11 +2,13 @@ import {inject} from '@angular/core'
 import {ResolveFn} from '@angular/router'
 import {forkJoin} from 'rxjs'
 
-import {DatabaseService} from '@core/db/database.service'
-import {Character, Model, SHEET_IMAGE_ATTACHMENT_ID} from '@core/db/model'
 import {ForkJoinSource} from '@core/rxjs';
+import {Character, Model} from '@db/model';
+import {CharacterService} from '@db/query';
+
 
 import {EditCharacterStoreData} from './edit-character.store'
+
 
 const EMPTY_CHARACTER: Nullable<Character, keyof Model> = {
     _id: null,
@@ -30,11 +32,10 @@ export const editCharacterResolver: ResolveFn<EditCharacterStoreData> = route =>
             abilities: []
         }
     } else {
-        const db = inject(DatabaseService)
+        const db = inject(CharacterService)
         const sources: ForkJoinSource<EditCharacterStoreData> = {
-            character: db.getById<Character>(characterId),
-            sheetImage: db.getAttachment(characterId, SHEET_IMAGE_ATTACHMENT_ID)
-                .pipe(db.catchNotFound())
+            character: db.findById(characterId),
+            sheetImage: db.findSheetImage(characterId)
         }
 
         return forkJoin(sources)

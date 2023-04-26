@@ -2,27 +2,27 @@ import {Injectable} from '@angular/core';
 import {EntityState} from '@ngrx/entity';
 import {map, Observable, takeUntil} from 'rxjs';
 
-import {Story} from '@core/db/model';
 import {AppComponentStore, AppEntityAdapter} from '@core/ngrx';
 import {chainSort, orderedSort, strSort} from '@core/util/sorters';
+import {StoryListView} from '@db/model';
 
 interface StoryOverviewStoreState {
-    stories: EntityState<Story>
+    stories: EntityState<StoryListView>
 }
 
 export interface StoryOverviewStoreData {
-    stories: Story[]
+    stories: StoryListView[]
 }
 
 @Injectable()
 export class StoryOverviewStore extends AppComponentStore<StoryOverviewStoreState> {
 
-    private readonly storyAdapter: AppEntityAdapter<Story> = this.createEntityAdapter(e => e._id, chainSort(
+    private readonly storyAdapter: AppEntityAdapter<StoryListView> = this.createEntityAdapter(e => e._id, chainSort(
         orderedSort(e => e.status, 'CONCEPT', 'DRAFT', 'DONE'),
         strSort(e => e.title)
     ))
 
-    public readonly stories$: Observable<Story[]> = this
+    public readonly stories$: Observable<StoryListView[]> = this
         .select(s => s.stories)
         .pipe(this.storyAdapter.selectAll)
 

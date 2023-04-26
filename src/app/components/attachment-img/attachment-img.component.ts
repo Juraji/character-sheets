@@ -2,8 +2,8 @@ import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 
-import {Attachment} from '@core/db/model';
 import {BooleanInput} from '@core/util/boolean-input';
+import {Attachment} from '@db/model/core';
 
 @Component({
     selector: 'app-attachment-img',
