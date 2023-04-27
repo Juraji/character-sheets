@@ -1,0 +1,9 @@
+<app-card flushBody>
+  <h4 data-card-title="" translate="settings.labels.combatClassNames"></h4>
+  <div class="card-body">
+    <span class="text-muted" translate="edit.form.settings.combatClassNames.description"></span>
+  </div>
+  <app-string-list
+    [value]="store.combatClassNames$ | async"
+    (valueChange)="store.setCombatClassNames($event)"></app-string-list>
+</app-card>

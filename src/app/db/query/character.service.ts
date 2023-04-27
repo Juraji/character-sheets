@@ -17,7 +17,7 @@ export class CharacterService extends DatabaseService<Character, CharacterListVi
     public findSheetImage(docId: string): Observable<Optional<Attachment>> {
         return this
             .findAttachment(docId, SHEET_IMAGE_NAME)
-            .pipe(this.catchNotFound())
+            .pipe(this.catchNotFound<Optional<Attachment>>(null))
     }
 
     public setSheetImage(docId: string, docRev: string, content: Blob): Observable<SaveAttachmentResponse> {

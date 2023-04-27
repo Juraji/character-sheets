@@ -1,0 +1,21 @@
+<ul class="list-group list-group-flush">
+  <li class="list-group-item" *ngFor="let s of value">
+    <div class="d-flex justify-content-between align-items-center">
+      <span>{{s}}</span>
+      <app-two-factor-button btnClass="btn-outline-danger btn-sm" (confirmed)="onRemoveString(s)">
+        <i class="bi bi-trash"></i>
+      </app-two-factor-button>
+    </div>
+  </li>
+  <li class="list-group-item">
+    <form class="input-group" (submit)="onAddString();$event.preventDefault()">
+      <input class="form-control" [formControl]="inputFormControl" [attr.aria-describedby]="inpDesc.id">
+      <button class="btn btn-primary" type="submit">
+        <i class="bi bi-plus-lg"></i>
+      </button>
+    </form>
+    <div [id]="'stringListInputHelp' | uniqueId" #inpDesc class="form-text"
+         translate="components.stringList.input.description"></div>
+  </li>
+
+</ul>

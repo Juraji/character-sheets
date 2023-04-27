@@ -5,14 +5,14 @@ import {TranslateModule} from '@ngx-translate/core';
 import {CardComponent} from '@components/card';
 import {MainMenuComponent} from '@components/main-menu';
 
-import {CouchSbSyncSettingsComponent} from './sections';
+import {CombatClassSettingsComponent, CouchSbSyncSettingsComponent, SpeciesSettingsComponent} from './sections';
 import {SettingsStore} from './settings.store';
 
 
 @Component({
     selector: 'app-settings',
     standalone: true,
-    imports: [CommonModule, CardComponent, TranslateModule, MainMenuComponent, CouchSbSyncSettingsComponent],
+    imports: [CommonModule, CardComponent, TranslateModule, MainMenuComponent, CouchSbSyncSettingsComponent, CombatClassSettingsComponent, SpeciesSettingsComponent],
     providers: [SettingsStore],
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.scss'],

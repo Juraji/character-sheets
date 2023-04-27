@@ -1,6 +1,7 @@
 {
   "app.title": "Personages",
   "components.twoFactorButton.confirmText.default": "Bevestigen.",
+  "components.stringList.input.description": "Je invoer moet uniek zijn.",
   "components.mainMenu.replicationStatus.tooltip.paused": "Gesynchroniseerd",
   "components.mainMenu.replicationStatus.tooltip.active": "Synchroniseren...",
   "components.mainMenu.replicationStatus.tooltip.denied": "Toegang geweigerd",
@@ -44,6 +45,7 @@
   "edit.form.characters.common.fromSettings.btn": "Uit Instellingen",
   "edit.form.characters.common.defaults.help": "Selecteer met links klikken of\ndruk met rechts om toe te voegen.",
   "edit.form.characters.common.info.label": "Gegevens",
+  "settings.labels.combatClassNames": "Gevechtsstijlen",
   "stories.labels.stories": "Verhalen",
   "stories.labels.story": "Verhaal",
   "edit.form.stories.noStories": "Er zijn nog geen verhalen geschreven.",
@@ -52,7 +54,8 @@
   "edit.form.settings.couchDbSync.buttons.disconnect": "Verbinding verbreken",
   "edit.form.settings.couchDbSync.enabled.description": "Synchronisatie met een centrale CouchDB-instantie is ingeschakeld.",
   "edit.form.settings.couchDbSync.uri.description": "Personages kan de lokale database synchroniseren met een externe CouchDB-instantie om het bewerken van je personages en verhalen vanaf meerdere apparaten mogelijk te maken. Om dit in te schakelen, moet je de URI van de externe CouchDB-instantie opgeven.",
-  "edit.form.settings.couchDbSync.uri.label": "URI",
+  "edit.form.settings.couchDbSync.uri.label": "Huidige URI",
+  "edit.form.settings.combatClassNames.description": "Het veld voor de gevechtsstijlen in de karakter biografie is een vrij veld, maar je kunt hier veelgebruikte combat classes vooraf definiëren om het invoeren te vergemakkelijken.",
   "stories.properties.title": "Titel",
   "stories.properties.status": "Status",
   "stories.properties.status.value.draft": "Ontwerp",
@@ -64,5 +67,7 @@
   "stories.properties.involvedCharacters.order": "Volgorde",
   "stories.properties.involvedCharacters.description": "Beschrijving",
   "settings.labels.settings": "Instellingen",
-  "settings.labels.remoteSync": "Synchronisatie"
+  "settings.labels.remoteSync": "Synchronisatie",
+  "settings.labels.speciesNames": "Soorten",
+  "edit.form.settings.speciesNames.description": "Het veld voor de soort in de karakter biografie is een vrij veld, maar je kunt hier veelgebruikte soorten vooraf definiëren om het invoeren te vergemakkelijken."
 }

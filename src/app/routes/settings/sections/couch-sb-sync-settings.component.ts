@@ -16,7 +16,6 @@ import {SettingsStore} from '../settings.store';
     standalone: true,
     imports: [CommonModule, CardComponent, TranslateModule, ReactiveFormsModule, TwoFactorButtonComponent, ReadOnlyFieldComponent, NotPipe],
     templateUrl: './couch-sb-sync-settings.component.html',
-    styleUrls: ['./couch-sb-sync-settings.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CouchSbSyncSettingsComponent {

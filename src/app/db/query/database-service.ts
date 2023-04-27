@@ -1,11 +1,21 @@
 import {inject} from '@angular/core';
 import PouchDB from 'pouchdb'
-import {catchError, defer, map, mergeMap, Observable, OperatorFunction, pipe, throwError, UnaryFunction} from 'rxjs'
-import {v4 as uuidV4} from 'uuid'
+import {
+    catchError,
+    defer,
+    map,
+    mergeMap,
+    MonoTypeOperatorFunction,
+    Observable,
+    pipe,
+    throwError,
+    UnaryFunction
+} from 'rxjs'
 
 import {AppException} from '@core/exceptions'
 import {POUCH_DB} from '@db/init';
 import {Attachment, Model, ModelId, ModelType, SaveAttachmentResponse} from '@db/model'
+import {v4 as uuidV4} from "uuid";
 
 /**
  * @param T Model interface
@@ -45,11 +55,9 @@ export abstract class DatabaseService<T extends Model, L extends Partial<Omit<T,
     }
 
     public save(doc: Omit<Nullable<T, keyof Model>, 'modelType'>): Observable<T> {
-        const updateCandidate: T = (!doc._id
-            ? {...doc, _id: uuidV4(), _rev: undefined, modelType: this.modelType}
-            : {...doc, modelType: this.modelType}) as T
-
-        return defer(() => this.pouchDb.put(updateCandidate))
+        return defer(() => !doc._id
+            ? this.pouchDb.post({...doc, _id: uuidV4(), _rev: undefined, modelType: this.modelType})
+            : this.pouchDb.put({...doc, modelType: this.modelType}))
             .pipe(
                 this.handlePouchDbResponse(),
                 map(r => ({...doc, _id: r.id, _rev: r.rev}) as T)
@@ -102,7 +110,7 @@ export abstract class DatabaseService<T extends Model, L extends Partial<Omit<T,
         )
     }
 
-    public readonly catchNotFound: <R>(defaultValue?: Optional<R>) => OperatorFunction<R, Optional<R>> = (defaultValue) => pipe(
+    public readonly catchNotFound: <R>(defaultValue: R) => MonoTypeOperatorFunction<R> = (defaultValue) => pipe(
         catchError(e => e.name === 'not_found' ? [defaultValue] : throwError(e))
     )
 

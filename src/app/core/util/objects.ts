@@ -30,5 +30,4 @@ export const objectOmitNulls = <T extends Nullable<object>>(obj: T): Partial<T> 
 /**
  * convenience functions: Checks for both not undefined and not null
  */
-export const isNullable = (obj: unknown): boolean => obj === undefined || obj === null
-export const isNotNullable = (obj: unknown): boolean => obj !== undefined && obj !== null
+export const isNotNullable = <T>(obj: T): boolean => obj !== undefined && obj !== null

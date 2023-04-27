@@ -1,5 +1,5 @@
 import {Inject, Injectable, OnDestroy} from '@angular/core';
-import {BehaviorSubject, fromEvent, map, merge, Observable, startWith, switchMap} from 'rxjs';
+import {BehaviorSubject, fromEvent, map, merge, Observable, of, startWith, switchMap} from 'rxjs';
 
 import {filterNotNull, takeUntilDestroyed} from '@core/rxjs';
 import {POUCH_DB} from '@db/init';
@@ -44,10 +44,11 @@ export class DbReplicationService implements OnDestroy {
     public ngOnDestroy() {
     }
 
-    public registerRemoteCouchDb(uri: string | null) {
+    public registerRemoteCouchDb(uri: string | null): Observable<string | null> {
         if (uri === null) localStorage.removeItem(COUCH_DB_URI_KEY)
         else localStorage.setItem(COUCH_DB_URI_KEY, uri)
         this._remoteCouchDbUri$.next(uri)
+        return of(uri)
     }
 
     private setupReplication(couchDbUri: string | null) {

@@ -8,7 +8,7 @@ import {DatabaseService} from './database-service';
 
 const DEFAULT_SETTINGS: Settings = {
     _id: 'SETTINGS',
-    _rev: undefined as unknown as string,
+    _rev: '',
     modelType: 'SETTINGS',
 
     combatClassNames: [
@@ -27,7 +27,7 @@ export class SettingsService extends DatabaseService<Settings, Settings> {
     public getSetting<K extends keyof Settings, V extends Settings[K]>(key: K): Observable<V> {
         const findRequest: PouchDB.Find.FindRequest<Settings> = {
             selector: {_id: this.modelType, modelType: this.modelType},
-            fields: ['_id', '_rev', key]
+            fields: [key]
         }
 
         // noinspection JSVoidFunctionReturnValueUsed
@@ -45,7 +45,9 @@ export class SettingsService extends DatabaseService<Settings, Settings> {
         return defer(() => this.pouchDb.get<Settings>(this.modelType)).pipe(
             this.catchNotFound(DEFAULT_SETTINGS),
             map(it => ({...it, [key]: value})),
-            mergeMap(update => this.pouchDb.put(update)),
+            mergeMap(update => update._rev === ''
+                ? this.pouchDb.post(update)
+                : this.pouchDb.put(update)),
             map(() => value)
         )
     }

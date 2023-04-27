@@ -1,20 +1,36 @@
 import {Injectable} from '@angular/core';
-import {map, Observable, switchMap, tap} from 'rxjs';
+import {EntityState} from '@ngrx/entity';
+import {map, mergeMap, Observable, takeUntil, tap} from 'rxjs';
 
-import {AppComponentStore} from '@core/ngrx';
+import {AppComponentStore, AppEntityAdapter} from '@core/ngrx';
 import {filterNotNull} from '@core/rxjs';
-import {DbReplicationService} from '@db/query';
+import {strSort} from '@core/util/sorters';
+import {DbReplicationService, SettingsService} from '@db/query';
 
 interface SettingsStoreState {
     // CouchDB Synchronization
-    couchDbSyncEnabled: boolean,
     couchDbSyncUri: Optional<string>,
+
+    // Combat Class Names
+    combatClassNames: EntityState<string>
+
+    // Combat Class Names
+    speciesNames: EntityState<string>
+}
+
+export interface SettingsStoreData {
+    couchDbSyncUri: Optional<string>,
+    combatClassNames: string[]
+    speciesNames: string[]
 }
 
 @Injectable()
 export class SettingsStore extends AppComponentStore<SettingsStoreState> {
 
-    public readonly couchDbSyncEnabled$: Observable<boolean> = this.select(s => s.couchDbSyncEnabled)
+    private readonly stringsAdapter: AppEntityAdapter<string> = this.createEntityAdapter(e => e, strSort(e => e))
+
+    public readonly couchDbSyncEnabled$: Observable<boolean> = this
+        .select(s => !!s.couchDbSyncUri)
     public readonly couchDbSyncUri$: Observable<Optional<string>> = this
         .select(s => s.couchDbSyncUri)
         .pipe(filterNotNull(), map(uri => {
@@ -24,32 +40,61 @@ export class SettingsStore extends AppComponentStore<SettingsStoreState> {
             return uriObj.toString()
         }))
 
+    public readonly combatClassNames$: Observable<string[]> = this
+        .select(s => s.combatClassNames)
+        .pipe(this.stringsAdapter.selectAll)
+    public readonly speciesNames$: Observable<string[]> = this
+        .select(s => s.speciesNames)
+        .pipe(this.stringsAdapter.selectAll)
+
     constructor(
-        private readonly dbReplicationService: DbReplicationService
+        private readonly dbReplicationService: DbReplicationService,
+        private readonly settings: SettingsService
     ) {
         super();
 
         this.setState({
-            couchDbSyncEnabled: false,
-            couchDbSyncUri: null
+            couchDbSyncUri: null,
+            combatClassNames: this.stringsAdapter.getInitialState(),
+            speciesNames: this.stringsAdapter.getInitialState()
         })
 
-        this.initCouchDbSyncSettings()
+        this.activatedRoute.data
+            .pipe(takeUntil(this.destroy$), map(d => d['storeData']))
+            .subscribe(sd => this.setStoreData(sd))
     }
 
-    public enableCouchDBSync(uri: string) {
-        this.dbReplicationService.registerRemoteCouchDb(uri)
-    }
-
-    public disableCouchDBSync() {
-        this.dbReplicationService.registerRemoteCouchDb(null)
-    }
-
-    private readonly initCouchDbSyncSettings: () => void = this.effect<void>($ => $.pipe(
-        switchMap(() => this.dbReplicationService.remoteCouchDbUri$),
-        tap(uri => this.patchState({
-            couchDbSyncEnabled: uri !== null,
-            couchDbSyncUri: uri
+    public setStoreData(sd: SettingsStoreData) {
+        this.patchState(s => ({
+            couchDbSyncEnabled: !!sd.couchDbSyncUri,
+            couchDbSyncUri: sd.couchDbSyncUri,
+            combatClassNames: this.stringsAdapter.setAll(sd.combatClassNames, s.combatClassNames),
+            speciesNames: this.stringsAdapter.setAll(sd.speciesNames, s.speciesNames)
         }))
+    }
+
+    public readonly enableCouchDBSync: (uri: string) => void = this.effect<string>($ => $.pipe(
+        mergeMap(uri => this.dbReplicationService.registerRemoteCouchDb(uri)),
+        tap(uri => this.patchState({couchDbSyncUri: uri}))
     ))
+
+    public readonly disableCouchDBSync: () => void = this.effect<void>($ => $.pipe(
+        mergeMap(() => this.dbReplicationService.registerRemoteCouchDb(null)),
+        tap(uri => this.patchState({couchDbSyncUri: uri}))
+    ))
+
+    public readonly setCombatClassNames: (classNames: string[]) => void = this.effect<string[]>($ => $.pipe(
+        mergeMap(l => this.settings.setSetting('combatClassNames', l)),
+        tap(l => this.patchState(s => ({
+            combatClassNames: this.stringsAdapter.setAll(l, s.combatClassNames)
+        })))
+    ))
+
+    public readonly setSpeciesNames: (speciesNames: string[]) => void = this.effect<string[]>($ => $.pipe(
+        mergeMap(l => this.settings.setSetting('speciesNames', l)),
+        tap(l => this.patchState(s => ({
+            speciesNames: this.stringsAdapter.setAll(l, s.speciesNames)
+        })))
+    ))
+
 }

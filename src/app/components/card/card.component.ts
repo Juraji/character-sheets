@@ -16,4 +16,8 @@ export class CardComponent {
     @Input()
     @BooleanInput()
     public hideHeader: Optional<boolean | string> = false
+
+    @Input()
+    @BooleanInput()
+    public flushBody: Optional<boolean | string> = false
 }

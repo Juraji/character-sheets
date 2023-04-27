@@ -1,0 +1,9 @@
+<app-card flushBody>
+  <h4 data-card-title="" translate="settings.labels.speciesNames"></h4>
+  <div class="card-body">
+    <span class="text-muted" translate="edit.form.settings.speciesNames.description"></span>
+  </div>
+  <app-string-list
+    [value]="store.speciesNames$ | async"
+    (valueChange)="store.setSpeciesNames($event)"></app-string-list>
+</app-card>

@@ -1,12 +1,12 @@
 <div class="btn-group" dropdown [isDisabled]="!!disabled">
-  <button class="btn" [ngClass]="btnClass" dropdownToggle
-          [id]="suffixId('button')"
-          [attr.aria-controls]="suffixId('menu')"
-          type="button">
+  <button class="btn" type="button" dropdownToggle #toggleBtn
+          [id]="'twoFactorToggleBtn' | uniqueId"
+          [ngClass]="btnClass">
     <ng-content></ng-content>
   </button>
-  <ul [id]="suffixId('menu')" *dropdownMenu class="dropdown-menu"
-      role="menu" [attr.aria-labelledby]="suffixId('button')">
+  <ul *dropdownMenu class="dropdown-menu" role="menu"
+      [id]="'twoFactorToggleBtn' | uniqueId"
+      [attr.aria-labelledby]="toggleBtn.id">
     <li role="menuitem">
       <a class="dropdown-item"
          (click)="confirmed.next()">{{(confirmText || 'components.twoFactorButton.confirmText.default') | translate}}</a>
