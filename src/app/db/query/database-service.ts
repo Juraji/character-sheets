@@ -12,7 +12,7 @@ import {Attachment, Model, ModelId, ModelType, SaveAttachmentResponse} from '@db
  * @param L Model list view interface
  */
 export abstract class DatabaseService<T extends Model, L extends Partial<Omit<T, keyof Model>> & Model> {
-    private readonly pouchDb: PouchDB.Database
+    protected readonly pouchDb: PouchDB.Database
     protected readonly lvFields: string[] | undefined
 
     /**

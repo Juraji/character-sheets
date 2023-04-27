@@ -7,7 +7,7 @@ import {filterNotEmpty, filterNotNull, firstNotNull} from '@core/rxjs'
 import {objectOmit, objectOmitNulls} from '@core/util/objects'
 import {strSort} from '@core/util/sorters'
 import {Attachment, Character, CharacterAbility, Model, ModelType} from '@db/model';
-import {CharacterService} from '@db/query';
+import {CharacterService, SettingsService} from '@db/query';
 
 export type StoreCharacter = Omit<Character, keyof Model | 'abilities'>
 export type FormCharacter = Omit<Character, keyof Model>
@@ -56,8 +56,13 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
     public readonly abilities$: Observable<CharacterAbility[]> = this
         .select(s => s.abilities)
         .pipe(this.abilityAdapter.selectAll)
+    public readonly combatClassNames$: Observable<string[]> = this.settings.getSetting('combatClassNames')
+    public readonly speciesNames$: Observable<string[]> = this.settings.getSetting('speciesNames')
 
-    constructor(private readonly characterService: CharacterService) {
+    constructor(
+        private readonly characters: CharacterService,
+        private readonly settings: SettingsService
+    ) {
         super()
 
         this.setState({
@@ -79,7 +84,7 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
             withLatestFrom(this.characterRev$, this.character$),
             map(([_id, _rev, existing]) =>
                 ({...existing, ...objectOmitNulls(character), _id, _rev}) as Character),
-            mergeMap(patch => this.characterService.save(patch)),
+            mergeMap(patch => this.characters.save(patch)),
             tap(c => this.patchCharacter(c))
         )
     }
@@ -89,21 +94,21 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
             .pipe(
                 firstNotNull(),
                 withLatestFrom(this.characterRev$.pipe(filterNotNull())),
-                mergeMap(([id, rev]) => this.characterService.delete(id, rev)),
+                mergeMap(([id, rev]) => this.characters.delete(id, rev)),
                 tap(() => this.patchState({id: null, rev: null}))
             )
     }
 
     public readonly updateSheetImage: (f: Blob) => void = this.effect<Blob>($ => $.pipe(
         withLatestFrom(this.characterId$.pipe(filterNotNull()), this.characterRev$.pipe(filterNotNull())),
-        mergeMap(([f, docId, rev]) => this.characterService.setSheetImage(docId, rev, f)),
+        mergeMap(([f, docId, rev]) => this.characters.setSheetImage(docId, rev, f)),
         tap(({_id, _rev, attachment}) => this
             .patchState({id: _id, rev: _rev, sheetImage: attachment})),
     ))
 
     public readonly removeSheetImage: () => void = this.effect<void>($ => $.pipe(
         withLatestFrom(this.characterId$.pipe(filterNotNull()), this.characterRev$.pipe(filterNotNull())),
-        mergeMap(([_, docId, rev]) => this.characterService.deleteSheetImage(docId, rev)),
+        mergeMap(([_, docId, rev]) => this.characters.deleteSheetImage(docId, rev)),
         tap(model => this.patchState({...model, sheetImage: null}))
     ))
 

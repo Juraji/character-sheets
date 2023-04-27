@@ -19,15 +19,6 @@ import {CharacterAbility} from '@db/model'
 
 import {EditCharacterStore, FormCharacter} from './edit-character.store'
 
-const DEFAULT_COMBAT_CLASSES: string[] = [
-    'Artificer', 'Barbarian', 'Bard', 'Blood Hunter', 'Cleric', 'Druid', 'Fighter',
-    'Monk', 'Paladin', 'Ranger', 'Rogue', 'Scout', 'Sorcerer', 'Warlock', 'Wizard',
-]
-
-const DEFAULT_SPECIES: string[] = [
-    'Elf', 'Halfling', 'Human', 'Orc', 'Undead'
-]
-
 const ABILITY_DEFAULTS: CharacterAbility = {
     label: '',
     description: '',
@@ -49,9 +40,6 @@ const ABILITY_DEFAULTS: CharacterAbility = {
 export class EditCharacterComponent implements OnInit, OnDestroy {
 
     public readonly editorActive$ = new BoolBehaviourSubject()
-
-    public readonly defaultCombatClasses = DEFAULT_COMBAT_CLASSES
-    public readonly defaultSpecies = DEFAULT_SPECIES
 
     public readonly formGroup = new ModelFormGroup<FormCharacter>({
         name: new FormControl('', [Validators.required]),

@@ -41,7 +41,7 @@
                 <button class="btn btn-secondary dropdown-toggle white-space-pre-line" dropdownToggle
                         aria-controls="characterSpeciesInputDefaultsMenu"
                         type="button">
-                  <span translate="edit.form.characters.common.defaults.btn"></span>&nbsp;<span class="caret"></span>
+                  <span translate="edit.form.characters.common.fromSettings.btn"></span>&nbsp;<span class="caret"></span>
                 </button>
                 <ul id="characterSpeciesInputDefaultsMenu" *dropdownMenu class="dropdown-menu"
                     role="menu" aria-labelledby="characterSpeciesInputDefaultsMenu">
@@ -49,7 +49,7 @@
                     <a class="dropdown-item disabled"
                        translate="edit.form.characters.common.defaults.help"></a>
                   </li>
-                  <li role="menuitem" *ngFor="let s of defaultSpecies">
+                  <li role="menuitem" *ngFor="let s of store.speciesNames$ | async">
                     <a class="dropdown-item" (click)="onUseSpecies(s)"
                        (contextmenu)="$event.preventDefault();onUseSpecies(s, true)">{{s}}</a>
                   </li>
@@ -71,7 +71,7 @@
                         id="characterCombatClassInputDefaultsMenuButton"
                         aria-controls="characterCombatClassInputDefaultsMenu"
                         type="button">
-                  <span translate="edit.form.characters.common.defaults.btn"></span>&nbsp;<span class="caret"></span>
+                  <span translate="edit.form.characters.common.fromSettings.btn"></span>&nbsp;<span class="caret"></span>
                 </button>
                 <ul id="characterCombatClassInputDefaultsMenu" *dropdownMenu class="dropdown-menu"
                     role="menu" aria-labelledby="characterCombatClassInputDefaultsMenuButton">
@@ -79,7 +79,7 @@
                     <a class="dropdown-item disabled white-space-pre-line"
                        translate="edit.form.characters.common.defaults.help"></a>
                   </li>
-                  <li role="menuitem" *ngFor="let cl of defaultCombatClasses">
+                  <li role="menuitem" *ngFor="let cl of store.combatClassNames$  | async">
                     <a class="dropdown-item" (click)="onUseCombatClass(cl)"
                        (contextmenu)="$event.preventDefault();onUseCombatClass(cl, true)">{{cl}}</a>
                   </li>

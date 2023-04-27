@@ -41,7 +41,7 @@
   "edit.form.characters.hitDie.description": "Welke dobbelsteen moet worden gebruikt om een hit te genereren?",
   "edit.form.characters.shieldBuf.description": "Hoeveel schild-buffer genereert deze vaardigheid?",
   "edit.form.characters.magicResistance.description": "Hoeveel magische weerstand genereert deze vaardigheid?",
-  "edit.form.characters.common.defaults.btn": "Standaard",
+  "edit.form.characters.common.fromSettings.btn": "Uit Instellingen",
   "edit.form.characters.common.defaults.help": "Selecteer met links klikken of\ndruk met rechts om toe te voegen.",
   "edit.form.characters.common.info.label": "Gegevens",
   "stories.labels.stories": "Verhalen",

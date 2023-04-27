@@ -41,7 +41,7 @@
   "edit.form.characters.hitDie.description": "What die should be used to generate a hit?",
   "edit.form.characters.shieldBuf.description": "How much shield buff does this ability generate?",
   "edit.form.characters.magicResistance.description": "How much magic resistance does this ability generate?",
-  "edit.form.characters.common.defaults.btn": "Default",
+  "edit.form.characters.common.fromSettings.btn": "From Settings",
   "edit.form.characters.common.defaults.help": "Select using left-click or\nuse right-click to append.",
   "edit.form.characters.common.info.label": "Info",
   "stories.labels.stories": "Stories",
