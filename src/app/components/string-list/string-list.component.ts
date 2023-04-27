@@ -1,9 +1,10 @@
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormControl, ReactiveFormsModule, ValidatorFn, Validators} from '@angular/forms';
-import {TranslateModule} from "@ngx-translate/core";
-import {TwoFactorButtonComponent} from "@components/two-factor-button";
-import {UniqueIdPipe} from "@components/pipes";
+import {TranslateModule} from '@ngx-translate/core';
+
+import {UniqueIdPipe} from '@components/pipes';
+import {TwoFactorButtonComponent} from '@components/two-factor-button';
 
 @Component({
     selector: 'app-string-list',

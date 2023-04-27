@@ -11,11 +11,11 @@ import {
     throwError,
     UnaryFunction
 } from 'rxjs'
+import {v4 as uuidV4} from 'uuid';
 
 import {AppException} from '@core/exceptions'
 import {POUCH_DB} from '@db/init';
 import {Attachment, Model, ModelId, ModelType, SaveAttachmentResponse} from '@db/model'
-import {v4 as uuidV4} from "uuid";
 
 /**
  * @param T Model interface
