@@ -2,7 +2,7 @@ import PouchDB from 'pouchdb'
 
 import PouchDBCore = PouchDB.Core;
 
-export type ModelType = 'CHARACTER' | 'STORY'
+export type ModelType = 'CHARACTER' | 'STORY' | 'SETTINGS'
 
 export type ModelId = PouchDBCore.IdMeta & PouchDBCore.RevisionIdMeta
 

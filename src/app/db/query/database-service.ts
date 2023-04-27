@@ -13,7 +13,7 @@ import {Attachment, Model, ModelId, ModelType, SaveAttachmentResponse} from '@db
  */
 export abstract class DatabaseService<T extends Model, L extends Partial<Omit<T, keyof Model>> & Model> {
     private readonly pouchDb: PouchDB.Database
-    protected readonly lvFields: string[]
+    protected readonly lvFields: string[] | undefined
 
     /**
      *
@@ -23,10 +23,10 @@ export abstract class DatabaseService<T extends Model, L extends Partial<Omit<T,
      */
     protected constructor(
         protected readonly modelType: ModelType,
-        listViewFields: string[]
+        listViewFields?: string[]
     ) {
         this.pouchDb = inject(POUCH_DB)
-        this.lvFields = [...listViewFields, 'modelType', '_id', '_rev']
+        this.lvFields = !!listViewFields ? [...listViewFields, 'modelType', '_id', '_rev'] : undefined
     }
 
     public findById(documentId: string): Observable<T> {
@@ -34,7 +34,7 @@ export abstract class DatabaseService<T extends Model, L extends Partial<Omit<T,
     }
 
     public findAll(): Observable<L[]> {
-        const findRequest: PouchDB.Find.FindRequest<T> = {
+        const findRequest: PouchDB.Find.FindRequest<L> = {
             selector: {modelType: this.modelType},
             fields: this.lvFields
         }
