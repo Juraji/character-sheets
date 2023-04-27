@@ -254,7 +254,7 @@
           </app-card>
         </div>
         <div class="col-sm-6">
-          <app-card *ngIf="store.sheetImage$ | async as imgAtt" class="mb-3">
+          <app-card *ngIf="store.sheetImage$ | async as imgAtt" class="mb-3" hideHeader>
             <app-attachment-img [attachment]="imgAtt" [alt]="store.name$ | async" fitContainer></app-attachment-img>
           </app-card>
           <ng-container *ngIf="store.sheetImage$ | async | not" [ngTemplateOutlet]="bioTpl"></ng-container>

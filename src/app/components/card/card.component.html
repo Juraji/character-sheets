@@ -1,5 +1,5 @@
 <div class="card">
-  <div class="card-header">
+  <div class="card-header" *ngIf="!hideHeader">
     <div class="d-flex justify-content-between align-items-center pb-0">
       <ng-content select="[data-card-title]"></ng-content>
       <div class="d-flex card-buttons">
@@ -8,7 +8,6 @@
     </div>
   </div>
   <div class="card-body">
-
     <ng-content></ng-content>
   </div>
 </div>

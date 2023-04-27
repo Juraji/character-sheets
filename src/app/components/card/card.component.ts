@@ -1,6 +1,8 @@
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 
+import {BooleanInput} from '@core/util/boolean-input';
+
 @Component({
     selector: 'app-card',
     standalone: true,
@@ -12,5 +14,6 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 export class CardComponent {
 
     @Input()
-    public title: Optional<string>
+    @BooleanInput()
+    public hideHeader: Optional<boolean | string> = false
 }

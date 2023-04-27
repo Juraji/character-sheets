@@ -25,7 +25,7 @@ export class TwoFactorButtonComponent extends ComponentWithUniqueId implements O
 
     @Input()
     @BooleanInput()
-    public disabled: Optional<boolean>
+    public disabled: Optional<boolean | string> = false
 
     @Output()
     public readonly confirmed: EventEmitter<void> = new EventEmitter()
