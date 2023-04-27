@@ -1,24 +1,19 @@
 @import "src/styles/cmp-var-imports";
 
 :host {
-  .stories-table {
-    .status-column {
-      width: 5rem;
+  .story-status {
+    width: 5rem;
 
-      &.DRAFT {
-        color: $blue-400;
-      }
-
-      &.REVIEW {
-        color: $orange-400;
-      }
-
-      &.DONE {
-        color: $green-400;
-      }
+    &.draft {
+      color: $blue-400;
     }
-    .actions-column {
-      text-align: right;
+
+    &.review {
+      color: $orange-400;
+    }
+
+    &.done {
+      color: $green-400;
     }
   }
 }

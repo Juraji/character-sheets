@@ -7,34 +7,17 @@
     </button>
   </div>
 
-  <table class="table stories-table">
-    <thead>
-    <tr>
-      <th scope="col" class="status-column" translate="stories.properties.title"></th>
-      <th scope="col" class="title-column" translate="stories.properties.status"></th>
-      <th scope="col" class="actions-column">&nbsp;</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let s of store.stories$ | async">
-      <td class="status-column" [ngClass]="[s.status]">
-        {{'stories.properties.status.value.' + (s.status | lowercase) | translate}}
-      </td>
-      <td class="title-column">{{s.title}}</td>
-      <td class="actions-column">
-        <div class="btn-group btn-group-sm">
-          <!--suppress TypeScriptUnresolvedReference -->
-          <a class="btn btn-secondary" [routerLink]="['../edit', s._id]">
-            <i class="bi bi-search"></i>&nbsp;<span translate="edit.buttons.common.view"></span>
-          </a>
-        </div>
-      </td>
-    </tr>
-    </tbody>
-    <tbody *ngIf="store.stories$ | async | not">
-    <tr>
-      <td colspan="3" class="text-muted" translate="edit.form.stories.noStories"></td>
-    </tr>
-    </tbody>
-  </table>
+  <div class="row">
+    <div class="col-xl-6 mb-4" *ngFor="let c of store.stories$ | async">
+      <app-card class="shadow">
+        <h4 data-card-title="">{{c.title}}</h4>
+        <!--suppress TypeScriptUnresolvedReference -->
+        <button class="btn btn-secondary" [routerLink]="['../edit', c._id]" data-card-btn>
+          <i class="bi bi-search"></i>&nbsp;<span translate="edit.buttons.common.view"></span>
+        </button>
+
+        <span class="story-status" *ngIf="c.status | lowercase as status" [translate]="'stories.properties.status.value.' + status" [ngClass]="status"></span>
+      </app-card>
+    </div>
+  </div>
 </div>
