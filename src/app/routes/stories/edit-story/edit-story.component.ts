@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateModule} from '@ngx-translate/core';
 
 import {CardComponent} from '@components/card';
+import {MainMenuComponent} from '@components/main-menu';
 import {NotPipe} from '@components/pipes';
 import {TwoFactorButtonComponent} from '@components/two-factor-button';
 import {ModelFormGroup} from '@core/forms';
@@ -17,7 +18,7 @@ import {EditStoryStore, StoreStory} from './edit-story.store';
 @Component({
     selector: 'app-edit-story',
     standalone: true,
-    imports: [CommonModule, CardComponent, NotPipe, ReactiveFormsModule, TwoFactorButtonComponent, TranslateModule],
+    imports: [CommonModule, CardComponent, NotPipe, ReactiveFormsModule, TwoFactorButtonComponent, TranslateModule, MainMenuComponent],
     providers: [EditStoryStore],
     templateUrl: './edit-story.component.html',
     styleUrls: ['./edit-story.component.scss'],

@@ -1,0 +1,7 @@
+@import "src/styles/variables-import";
+
+:host {
+  display: block;
+  margin-bottom: 1rem;
+  box-shadow: $box-shadow-lg;
+}

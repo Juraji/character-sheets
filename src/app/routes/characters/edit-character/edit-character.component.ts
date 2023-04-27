@@ -8,6 +8,7 @@ import {map, mergeMap, tap} from 'rxjs'
 
 import {AttachmentImgComponent} from '@components/attachment-img';
 import {CardComponent} from '@components/card'
+import {MainMenuComponent} from '@components/main-menu';
 import {ArrayIndexSeqPipe, NotPipe} from '@components/pipes'
 import {ReadOnlyFieldComponent} from '@components/read-only-field'
 import {TwoFactorButtonComponent} from '@components/two-factor-button'
@@ -39,7 +40,7 @@ const ABILITY_DEFAULTS: CharacterAbility = {
 @Component({
     selector: 'app-edit-character',
     standalone: true,
-    imports: [CommonModule, TranslateModule, ReactiveFormsModule, CardComponent, NotPipe, BsDropdownModule, ReadOnlyFieldComponent, ArrayIndexSeqPipe, NgOptimizedImage, TwoFactorButtonComponent, AttachmentImgComponent],
+    imports: [CommonModule, TranslateModule, ReactiveFormsModule, CardComponent, NotPipe, BsDropdownModule, ReadOnlyFieldComponent, ArrayIndexSeqPipe, NgOptimizedImage, TwoFactorButtonComponent, AttachmentImgComponent, MainMenuComponent],
     providers: [EditCharacterStore],
     templateUrl: './edit-character.component.html',
     styleUrls: ['./edit-character.component.scss'],

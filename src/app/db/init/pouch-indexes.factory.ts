@@ -5,14 +5,17 @@ const INDEXES: PouchDB.Find.CreateIndexOptions[] = [
     {index: {name: 'idx_model_model_type', fields: ['modelType']}}
 ]
 
-export const createPouchIndexesFactory = (db: PouchDB.Database) => () => {
-    // noinspection JSVoidFunctionReturnValueUsed
-    defer(() => db.getIndexes())
-        .pipe(
-            map(res => res.indexes.map(idx => idx.name)),
-            mergeMap((existingIdxNames) => INDEXES
-                .filter(cio => !!cio.index.name && !existingIdxNames.includes(cio.index.name))),
-            mergeMap(cio => from(db.createIndex(cio)))
-        )
-        .subscribe(res => console.info('Created index', res.result))
+export function createPouchIndexesFactory(db: PouchDB.Database) {
+    return () => {
+        // noinspection JSVoidFunctionReturnValueUsed
+        defer(() => db.getIndexes())
+            .pipe(
+                map(res => res.indexes.map(idx => idx.name)),
+                mergeMap((existingIdxNames) => INDEXES
+                    .filter(cio => !!cio.index.name && !existingIdxNames.includes(cio.index.name))),
+                mergeMap(cio => from(db.createIndex(cio)))
+            )
+            .subscribe(res => console.info('Created index', res.result))
+    }
+
 }

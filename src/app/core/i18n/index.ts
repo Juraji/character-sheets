@@ -18,9 +18,7 @@ import {
 } from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
-import {detectDefaultLanguageFactory} from '@core/i18n/detect-default-language.factory';
-import {bindAppTitleToHtmlPageTitle} from '@core/i18n/html-page-title-translation.factory';
-import {registerLanguagesFactory} from '@core/i18n/register-languages.factory';
+import {i18nSetupLanguagesFactory} from './i18n-setup-languages.factory';
 
 export function provideI18n(): Provider[] {
     return [
@@ -31,16 +29,15 @@ export function provideI18n(): Provider[] {
         {provide: TranslateStore, useClass: TranslateStore},
         {provide: TranslateService, useClass: TranslateService},
         {provide: USE_STORE, useValue: true},
-        {provide: USE_DEFAULT_LANG, useValue: true},
+        {provide: USE_DEFAULT_LANG, useValue: false},
         {provide: USE_EXTEND, useValue: true},
-        {provide: DEFAULT_LANGUAGE, useFactory: detectDefaultLanguageFactory, deps: [LOCALE_ID]},
-        {provide: APP_INITIALIZER, useFactory: registerLanguagesFactory, deps: [TranslateService], multi: true},
+        {provide: DEFAULT_LANGUAGE, useValue: 'en'},
         {
             provide: APP_INITIALIZER,
-            useFactory: bindAppTitleToHtmlPageTitle,
-            deps: [TranslateService, Title],
+            useFactory: i18nSetupLanguagesFactory,
+            deps: [TranslateService, Title, LOCALE_ID],
             multi: true
-        }
+        },
     ]
 }
 

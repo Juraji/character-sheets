@@ -3,7 +3,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output}
 import {TranslateModule} from '@ngx-translate/core';
 import {BsDropdownModule} from 'ngx-bootstrap/dropdown'
 
-import {FilterNotNullPipe} from '@components/pipes/filter-not-null.pipe'
+import {FilterNotNullPipe} from '@components/pipes'
 import {BooleanInput} from '@core/util/boolean-input';
 import {ComponentWithUniqueId} from '@core/util/component-with-unique-id'
 

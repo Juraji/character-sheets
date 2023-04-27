@@ -4,7 +4,7 @@ import PouchDBFindPlugin from 'pouchdb-find';
 const DATABASE_NAME = 'character-sheets-db'
 const DB_COMPACT_INTERVAL = 6e4
 
-export function pouchdbFactory() {
+export function pouchdbFactory(): PouchDB.Database {
     // Create PouchDB instance
     PouchDB.plugin(PouchDBFindPlugin)
     const db: PouchDB.Database = new PouchDB(DATABASE_NAME)

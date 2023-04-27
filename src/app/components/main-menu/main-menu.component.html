@@ -1,0 +1,23 @@
+<nav class="navbar navbar-expand navbar navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/" translate="app.title"></a>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item" *ngFor="let item of menuItems">
+          <a class="nav-link"
+             appAriaRouterLinkCurrent
+             routerLinkActive="active"
+             [routerLink]="item.route" [translate]="item.label"></a>
+        </li>
+      </ul>
+      <div class="d-flex pe-4">
+        <div class="db-replication-indicator"
+             *ngIf="dbReplicationStatus$ | async as status">
+          <i class="bi" [ngClass]="status.classNames"></i>&nbsp;
+          <span [translate]="status.tooltipKey"
+                [translateParams]="status"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
