@@ -51,7 +51,7 @@
   "edit.form.stories.draftText.description": "A space for you to draft up a story.",
   "edit.form.settings.remoteSync.buttons.disconnect": "Disconnect",
   "edit.form.settings.remoteSync.enabled.description": "Remote sync to a central CouchDB instance is enabled.",
-  "edit.form.settings.remoteSync.uri.description": "The URI of the remote CouchDB instance.",
+  "edit.form.settings.remoteSync.uri.description": "Character Sheets can synchronize the local database with a remote CouchDB instance to accommodate editing your characters and stories from multiple devices. In order to enable this supply the URI of the remote CouchDB instance.",
   "edit.form.settings.remoteSync.uri.label": "URI",
   "stories.properties.title": "Title",
   "stories.properties.status": "Status",
