@@ -10,6 +10,10 @@ export default [
         loadChildren: () => import('./routes/stories/routes')
     },
     {
+        path: 'settings',
+        loadChildren: () => import('./routes/settings/routes')
+    },
+    {
         path: '**',
         redirectTo: 'characters'
     }

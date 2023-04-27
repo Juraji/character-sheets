@@ -34,6 +34,10 @@ export class AppComponent {
             label: 'stories.labels.stories',
             route: '/stories'
         },
+        {
+            label: 'settings.labels.settings',
+            route: '/settings'
+        },
     ]
 
     constructor() {

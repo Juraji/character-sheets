@@ -1,11 +1,14 @@
 <div class="card">
-  <div class="card-body">
-    <div class="d-flex justify-content-between align-items-start pb-0">
+  <div class="card-header">
+    <div class="d-flex justify-content-between align-items-center pb-0">
       <ng-content select="[data-card-title]"></ng-content>
       <div class="d-flex card-buttons">
         <ng-content select="[data-card-btn]"></ng-content>
       </div>
     </div>
+  </div>
+  <div class="card-body">
+
     <ng-content></ng-content>
   </div>
 </div>

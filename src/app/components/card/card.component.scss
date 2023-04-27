@@ -8,6 +8,6 @@
   }
 
   ::ng-deep [data-card-title] {
-    margin-bottom: var(--#{$prefix}card-title-spacer-y);
+    margin-bottom: 0;
   }
 }

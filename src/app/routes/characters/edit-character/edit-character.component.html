@@ -1,9 +1,11 @@
 <div class="container">
   <form [formGroup]="formGroup" (submit)="onFormSubmit()" *ngIf="editorActive$ | async; else viewTpl">
     <app-card>
-      <h2 class="card-title" data-card-title=""><span class="text-muted"><span
+      <h2 data-card-title=""><span class="text-muted"><span
         translate="characters.labels.character"></span>: </span>{{store.name$ | async}}</h2>
-      <app-two-factor-button btnClass="btn-outline-danger" (confirmed)="onDelete()" data-card-btn="">
+      <app-two-factor-button btnClass="btn-outline-danger"
+                             (confirmed)="onDelete()" data-card-btn=""
+                             [disabled]="store.characterIsNew$ | async">
         <i class="bi bi-trash"></i>&nbsp;<span translate="edit.buttons.common.delete"></span>
       </app-two-factor-button>
       <button type="submit" class="btn btn-primary" data-card-btn [disabled]="formGroup.invalid">
@@ -201,7 +203,7 @@
 
   <ng-template #viewTpl>
     <app-card>
-      <h2 class="card-title" data-card-title=""><span class="text-muted"><span
+      <h2 data-card-title=""><span class="text-muted"><span
         translate="characters.labels.character"></span>: </span>{{store.name$ | async}}</h2>
       <button type="button" (click)="editorActive$.enable()"
               class="btn btn-secondary" data-card-btn>

@@ -9,7 +9,7 @@ import {map, mergeMap, tap} from 'rxjs'
 import {AttachmentImgComponent} from '@components/attachment-img';
 import {CardComponent} from '@components/card'
 import {ArrayIndexSeqPipe, NotPipe} from '@components/pipes'
-import {ReadOnlyFieldComponent} from '@components/read-only-field/read-only-field.component'
+import {ReadOnlyFieldComponent} from '@components/read-only-field'
 import {TwoFactorButtonComponent} from '@components/two-factor-button'
 import {ModelFormGroup} from '@core/forms'
 import {takeUntilDestroyed} from '@core/rxjs'

@@ -4,6 +4,7 @@ import {TranslateModule} from '@ngx-translate/core';
 import {BsDropdownModule} from 'ngx-bootstrap/dropdown'
 
 import {FilterNotNullPipe} from '@components/pipes/filter-not-null.pipe'
+import {BooleanInput} from '@core/util/boolean-input';
 import {ComponentWithUniqueId} from '@core/util/component-with-unique-id'
 
 @Component({
@@ -21,6 +22,10 @@ export class TwoFactorButtonComponent extends ComponentWithUniqueId implements O
 
     @Input()
     public btnClass = ''
+
+    @Input()
+    @BooleanInput()
+    public disabled: Optional<boolean>
 
     @Output()
     public readonly confirmed: EventEmitter<void> = new EventEmitter()

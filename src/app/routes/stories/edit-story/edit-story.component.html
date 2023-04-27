@@ -1,7 +1,7 @@
 <div class="container">
   <form [formGroup]="formGroup" (submit)="onFormSubmit()">
     <app-card>
-      <h2 class="card-title" data-card-title="">
+      <h2 data-card-title="">
         <span class="text-muted"><span translate="stories.labels.story"></span>: </span>{{store.title$ | async}}
       </h2>
       <app-two-factor-button btnClass="btn-outline-danger" (confirmed)="onDeleteStory()" data-card-btn="">

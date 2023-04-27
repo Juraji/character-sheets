@@ -53,5 +53,7 @@
   "stories.properties.plotPoints": "Verhaallijnen",
   "stories.properties.involvedCharacters": "Betrokken personages",
   "stories.properties.involvedCharacters.order": "Volgorde",
-  "stories.properties.involvedCharacters.description": "Beschrijving"
+  "stories.properties.involvedCharacters.description": "Beschrijving",
+  "settings.labels.settings": "Instellingen",
+  "settings.labels.remoteSync": "Synchronisatie"
 }

@@ -9,7 +9,7 @@
   <div class="row">
     <div class="col-sm-4 mb-4" *ngFor="let c of store.characters$ | async">
       <app-card class="shadow">
-        <h4 class="card-title" data-card-title="">{{c.name}}</h4>
+        <h4 data-card-title="">{{c.name}}</h4>
         <!--suppress TypeScriptUnresolvedReference -->
         <button class="btn btn-secondary" [routerLink]="['../edit', c._id]" data-card-btn>
           <i class="bi bi-search"></i>&nbsp;<span translate="edit.buttons.common.view"></span>

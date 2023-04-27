@@ -53,5 +53,7 @@
   "stories.properties.plotPoints": "Plot Points",
   "stories.properties.involvedCharacters": "Involved Characters",
   "stories.properties.involvedCharacters.order": "Order",
-  "stories.properties.involvedCharacters.description": "Description"
+  "stories.properties.involvedCharacters.description": "Description",
+  "settings.labels.settings": "Settings",
+  "settings.labels.remoteSync": "Remove sync"
 }
