@@ -44,7 +44,7 @@ export class EditCharacterComponent implements OnInit, OnDestroy {
     public readonly formGroup = new ModelFormGroup<FormCharacter>({
         name: new FormControl('', [Validators.required]),
         bio: new FormControl(''),
-        age: new FormControl(100, [Validators.required, Validators.min(1)]),
+        age: new FormControl<Optional<number>>(undefined, [Validators.min(1)]),
         species: new FormControl('', [Validators.required]),
         combatClass: new FormControl('', [Validators.required]),
         abilities: new FormArray([]),

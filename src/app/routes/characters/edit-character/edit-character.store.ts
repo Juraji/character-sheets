@@ -39,7 +39,7 @@ export class EditCharacterStore extends AppComponentStore<EditCharacterStoreStat
         .select(s => s.character)
         .pipe(filterNotNull())
 
-    public readonly age$: Observable<number> = this.character$
+    public readonly age$: Observable<Optional<number>> = this.character$
         .pipe(map(s => s.age))
     public readonly bio$: Observable<string> = this.character$
         .pipe(map(s => s.bio), filterNotEmpty())

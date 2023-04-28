@@ -3,7 +3,7 @@ import {Model} from './core';
 export interface Character extends Model {
     modelType: 'CHARACTER'
     name: string
-    age: number
+    age: Optional<number>
     species: string
     combatClass: string
     bio: string

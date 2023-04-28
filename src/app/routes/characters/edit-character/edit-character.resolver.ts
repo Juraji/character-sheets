@@ -17,7 +17,7 @@ const EMPTY_CHARACTER: Nullable<Character, keyof Model> = {
     modelType: 'CHARACTER',
     name: 'New Character',
     bio: '',
-    age: 0,
+    age: undefined,
     species: '',
     combatClass: '',
     abilities: []

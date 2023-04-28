@@ -41,7 +41,8 @@
                 <button class="btn btn-secondary dropdown-toggle white-space-pre-line" dropdownToggle
                         aria-controls="characterSpeciesInputDefaultsMenu"
                         type="button">
-                  <span translate="edit.form.characters.common.fromSettings.btn"></span>&nbsp;<span class="caret"></span>
+                  <span translate="edit.form.characters.common.fromSettings.btn"></span>&nbsp;<span
+                  class="caret"></span>
                 </button>
                 <ul id="characterSpeciesInputDefaultsMenu" *dropdownMenu class="dropdown-menu"
                     role="menu" aria-labelledby="characterSpeciesInputDefaultsMenu">
@@ -71,7 +72,8 @@
                         id="characterCombatClassInputDefaultsMenuButton"
                         aria-controls="characterCombatClassInputDefaultsMenu"
                         type="button">
-                  <span translate="edit.form.characters.common.fromSettings.btn"></span>&nbsp;<span class="caret"></span>
+                  <span translate="edit.form.characters.common.fromSettings.btn"></span>&nbsp;<span
+                  class="caret"></span>
                 </button>
                 <ul id="characterCombatClassInputDefaultsMenu" *dropdownMenu class="dropdown-menu"
                     role="menu" aria-labelledby="characterCombatClassInputDefaultsMenuButton">
@@ -215,7 +217,8 @@
         <div class="col-sm-6">
           <app-card class="mb-3">
             <h4 data-card-title="" translate="edit.form.characters.common.info.label"></h4>
-            <app-read-only-field inline label="characters.properties.age">{{store.age$ | async}}</app-read-only-field>
+            <app-read-only-field inline label="characters.properties.age"
+                                 *ngIf="store.age$ | async as age">{{age}}</app-read-only-field>
             <app-read-only-field inline
                                  label="characters.properties.species">{{store.species$ | async}}</app-read-only-field>
             <app-read-only-field inline
