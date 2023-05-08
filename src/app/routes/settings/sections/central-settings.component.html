@@ -1,11 +1,17 @@
 <app-card>
   <h4 data-card-title="" translate="common.labels.centralName"></h4>
   <button data-card-btn="" class="btn btn btn-primary" (click)="onConnect()"
-          *ngIf="(isAuthenticated$ | async) === false">Login
+          *ngIf="(isAuthenticated$ | async) === false"
+          translate="edit.form.settings.central.login.btn">
   </button>
   <button data-card-btn="" class="btn btn btn-outline-danger"
-          (click)="onDisconnect()" *ngIf="isAuthenticated$ | async">Logout
+          (click)="onDisconnect()" *ngIf="isAuthenticated$ | async"
+          translate="edit.form.settings.central.logout.btn">
   </button>
 
-  <p class="text-info" *ngIf="centralUsername$ | async as username">You are logged in as "{{username}}"</p>
+  <p class="text-info" *ngIf="centralUsername$ | async as username"
+     translate="edit.form.settings.central.loggedInMsg" [translateParams]="{username}"></p>
+  <p class="text-muted white-space-pre-line" translate="edit.form.settings.central.description">
+
+  </p>
 </app-card>
