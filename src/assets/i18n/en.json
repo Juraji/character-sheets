@@ -1,5 +1,6 @@
 {
-  "app.title": "Character Sheets",
+  "common.labels.appName": "Character Sheets",
+  "common.labels.centralName": "Character Sheet Central",
   "components.twoFactorButton.confirmText.default": "Confirm.",
   "components.stringList.input.description": "Your input must be unique.",
   "components.mainMenu.replicationStatus.tooltip.paused": "Synchronized",

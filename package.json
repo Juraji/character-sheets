@@ -23,6 +23,8 @@
     "@ngrx/entity": "^15.4.0",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
+    "angular-oauth2-oidc": "^15.0.1",
+    "angular-oauth2-oidc-jwks": "^15.0.1",
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.4",
     "ngx-bootstrap": "^10.2.0",

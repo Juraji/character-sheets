@@ -1,5 +1,6 @@
 {
-  "app.title": "Personages",
+  "common.labels.appName": "Character Sheets",
+  "common.labels.centralName": "Character Sheet Central",
   "components.twoFactorButton.confirmText.default": "Bevestigen.",
   "components.stringList.input.description": "Je invoer moet uniek zijn.",
   "components.mainMenu.replicationStatus.tooltip.paused": "Gesynchroniseerd",
@@ -67,7 +68,6 @@
   "stories.properties.involvedCharacters.order": "Volgorde",
   "stories.properties.involvedCharacters.description": "Beschrijving",
   "settings.labels.settings": "Instellingen",
-  "settings.labels.remoteSync": "Synchronisatie",
   "settings.labels.speciesNames": "Soorten",
   "edit.form.settings.speciesNames.description": "Het veld voor de soort in de karakter biografie is een vrij veld, maar je kunt hier veelgebruikte soorten vooraf definiëren om het invoeren te vergemakkelijken."
 }

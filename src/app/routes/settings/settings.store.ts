@@ -3,14 +3,10 @@ import {EntityState} from '@ngrx/entity';
 import {map, mergeMap, Observable, takeUntil, tap} from 'rxjs';
 
 import {AppComponentStore, AppEntityAdapter} from '@core/ngrx';
-import {filterNotNull} from '@core/rxjs';
 import {strSort} from '@core/util/sorters';
 import {DbReplicationService, SettingsService} from '@db/query';
 
 interface SettingsStoreState {
-    // CouchDB Synchronization
-    couchDbSyncUri: Optional<string>,
-
     // Combat Class Names
     combatClassNames: EntityState<string>
 
@@ -19,7 +15,6 @@ interface SettingsStoreState {
 }
 
 export interface SettingsStoreData {
-    couchDbSyncUri: Optional<string>,
     combatClassNames: string[]
     speciesNames: string[]
 }
@@ -27,18 +22,8 @@ export interface SettingsStoreData {
 @Injectable()
 export class SettingsStore extends AppComponentStore<SettingsStoreState> {
 
-    private readonly stringsAdapter: AppEntityAdapter<string> = this.createEntityAdapter(e => e, strSort(e => e))
-
-    public readonly couchDbSyncEnabled$: Observable<boolean> = this
-        .select(s => !!s.couchDbSyncUri)
-    public readonly couchDbSyncUri$: Observable<Optional<string>> = this
-        .select(s => s.couchDbSyncUri)
-        .pipe(filterNotNull(), map(uri => {
-            const uriObj = new URL(uri)
-            if (!!uriObj.username) uriObj.username = '***'
-            if (!!uriObj.password) uriObj.password = '***'
-            return uriObj.toString()
-        }))
+    private readonly stringsAdapter: AppEntityAdapter<string> = this
+        .createEntityAdapter(e => e, strSort(e => e))
 
     public readonly combatClassNames$: Observable<string[]> = this
         .select(s => s.combatClassNames)
@@ -54,7 +39,6 @@ export class SettingsStore extends AppComponentStore<SettingsStoreState> {
         super();
 
         this.setState({
-            couchDbSyncUri: null,
             combatClassNames: this.stringsAdapter.getInitialState(),
             speciesNames: this.stringsAdapter.getInitialState()
         })
@@ -66,22 +50,10 @@ export class SettingsStore extends AppComponentStore<SettingsStoreState> {
 
     public setStoreData(sd: SettingsStoreData) {
         this.patchState(s => ({
-            couchDbSyncEnabled: !!sd.couchDbSyncUri,
-            couchDbSyncUri: sd.couchDbSyncUri,
             combatClassNames: this.stringsAdapter.setAll(sd.combatClassNames, s.combatClassNames),
             speciesNames: this.stringsAdapter.setAll(sd.speciesNames, s.speciesNames)
         }))
     }
-
-    public readonly enableCouchDBSync: (uri: string) => void = this.effect<string>($ => $.pipe(
-        mergeMap(uri => this.dbReplicationService.registerRemoteCouchDb(uri)),
-        tap(uri => this.patchState({couchDbSyncUri: uri}))
-    ))
-
-    public readonly disableCouchDBSync: () => void = this.effect<void>($ => $.pipe(
-        mergeMap(() => this.dbReplicationService.registerRemoteCouchDb(null)),
-        tap(uri => this.patchState({couchDbSyncUri: uri}))
-    ))
 
     public readonly setCombatClassNames: (classNames: string[]) => void = this.effect<string[]>($ => $.pipe(
         mergeMap(l => this.settings.setSetting('combatClassNames', l)),

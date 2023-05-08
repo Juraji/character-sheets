@@ -10,7 +10,7 @@ export function i18nSetupLanguagesFactory(translate: TranslateService, htmlTitle
         translate.use(userLang)
 
         translate
-            .get('app.title')
+            .get('common.labels.appName')
             .subscribe(t => htmlTitle.setTitle(t))
     }
 }

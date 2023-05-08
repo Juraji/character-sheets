@@ -1,0 +1,10 @@
+{
+  "issuer": "http://localhost:9000/central",
+  "redirectUri": "http://localhost:4200/settings",
+  "clientId": "character-sheets-dev",
+  "dummyClientSecret": "character-sheets-dev",
+  "responseType": "code",
+  "scope": "openid profile couchdb_sync",
+  "showDebugInformation": true,
+  "timeoutFactor": 0.9
+}

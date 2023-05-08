@@ -1,0 +1,11 @@
+<app-card>
+  <h4 data-card-title="" translate="common.labels.centralName"></h4>
+  <button data-card-btn="" class="btn btn btn-primary" (click)="onConnect()"
+          *ngIf="(isAuthenticated$ | async) === false">Login
+  </button>
+  <button data-card-btn="" class="btn btn btn-outline-danger"
+          (click)="onDisconnect()" *ngIf="isAuthenticated$ | async">Logout
+  </button>
+
+  <p class="text-info" *ngIf="centralUsername$ | async as username">You are logged in as "{{username}}"</p>
+</app-card>

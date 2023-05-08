@@ -1,18 +1,14 @@
 import {Inject, Injectable, OnDestroy} from '@angular/core';
-import {BehaviorSubject, fromEvent, map, merge, Observable, of, startWith, switchMap} from 'rxjs';
+import {BehaviorSubject, fromEvent, map, merge, Observable, startWith, switchMap} from 'rxjs';
 
+import {CentralCouchDBCredentials, CentralService} from '@core/central';
 import {filterNotNull, takeUntilDestroyed} from '@core/rxjs';
 import {POUCH_DB} from '@db/init';
-import {ReplicationStatusMessage} from '@db/model';
-
-const COUCH_DB_URI_KEY = 'character-sheets:couch-db-uri'
+import {ModelId, ReplicationStatusMessage} from '@db/model';
 
 @Injectable()
 export class DbReplicationService implements OnDestroy {
-    private readonly _remoteCouchDbUri$ = new BehaviorSubject<string | null>(localStorage.getItem(COUCH_DB_URI_KEY))
     private readonly currentSync$ = new BehaviorSubject<PouchDB.Replication.Sync<object> | null>(null)
-
-    public readonly remoteCouchDbUri$: Observable<string | null> = this._remoteCouchDbUri$
 
     public readonly status$: Observable<ReplicationStatusMessage> = this.currentSync$.pipe(
         filterNotNull(),
@@ -35,35 +31,34 @@ export class DbReplicationService implements OnDestroy {
         )),
     )
 
-    constructor(@Inject(POUCH_DB) private readonly db: PouchDB.Database) {
-        this.remoteCouchDbUri$
+    constructor(
+        @Inject(POUCH_DB) private readonly db: PouchDB.Database,
+        private readonly centralService: CentralService,
+    ) {
+        this.centralService.couchDBCredentials$
             .pipe(takeUntilDestroyed(this))
-            .subscribe(uri => this.setupReplication(uri))
+            .subscribe(cred => this.setupReplication(cred))
     }
 
     public ngOnDestroy() {
     }
 
-    public registerRemoteCouchDb(uri: string | null): Observable<string | null> {
-        if (uri === null) localStorage.removeItem(COUCH_DB_URI_KEY)
-        else localStorage.setItem(COUCH_DB_URI_KEY, uri)
-        this._remoteCouchDbUri$.next(uri)
-        return of(uri)
-    }
-
-    private setupReplication(couchDbUri: string | null) {
+    private setupReplication(credentials: CentralCouchDBCredentials | null) {
         // Cancel optional previous sync
         this.currentSync$.value?.cancel()
 
         // Create new sync if uri is defined
-        if (!!couchDbUri) {
+        if (!!credentials) {
+            const uri = `http://${credentials.username}:${credentials.password}@localhost:5984/${credentials.databaseName}`
             const syncOpts: PouchDB.Replication.SyncOptions = {
                 live: true,
                 retry: true,
                 back_off_function: delay => delay === 0 ? 1000 : delay * 3,
+                // Ignore design documents both ways
+                filter: (doc: ModelId) => !doc._id.startsWith('_design')
             }
 
-            const sync: PouchDB.Replication.Sync<object> = this.db.sync(couchDbUri, syncOpts)
+            const sync: PouchDB.Replication.Sync<object> = this.db.sync(uri, syncOpts)
             this.currentSync$.next(sync)
         }
     }
