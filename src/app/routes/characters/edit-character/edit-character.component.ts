@@ -8,6 +8,7 @@ import {map, mergeMap, tap} from 'rxjs'
 
 import {AttachmentImgComponent} from '@components/attachment-img';
 import {CardComponent} from '@components/card'
+import {CroppedImageInputComponent} from '@components/cropped-image-input';
 import {MainMenuComponent} from '@components/main-menu';
 import {ArrayIndexSeqPipe, NotPipe} from '@components/pipes'
 import {ReadOnlyFieldComponent} from '@components/read-only-field'
@@ -31,7 +32,7 @@ const ABILITY_DEFAULTS: CharacterAbility = {
 @Component({
     selector: 'app-edit-character',
     standalone: true,
-    imports: [CommonModule, TranslateModule, ReactiveFormsModule, CardComponent, NotPipe, BsDropdownModule, ReadOnlyFieldComponent, ArrayIndexSeqPipe, NgOptimizedImage, TwoFactorButtonComponent, AttachmentImgComponent, MainMenuComponent],
+    imports: [CommonModule, TranslateModule, ReactiveFormsModule, CardComponent, NotPipe, BsDropdownModule, ReadOnlyFieldComponent, ArrayIndexSeqPipe, NgOptimizedImage, TwoFactorButtonComponent, AttachmentImgComponent, MainMenuComponent, CroppedImageInputComponent],
     providers: [EditCharacterStore],
     templateUrl: './edit-character.component.html',
     styleUrls: ['./edit-character.component.scss'],
@@ -125,10 +126,7 @@ export class EditCharacterComponent implements OnInit, OnDestroy {
                 {relativeTo: this.activatedRoute, replaceUrl: true}))
     }
 
-    public onSetSheetImage(e: Event) {
-        const target = e.target as HTMLInputElement
-        const file = target.files?.item(0)
-
+    public onSetSheetImage(file: Blob) {
         if (!!file) this.store.updateSheetImage(file)
     }
 

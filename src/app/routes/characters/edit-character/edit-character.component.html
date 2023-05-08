@@ -94,13 +94,16 @@
         <div class="col-sm-6">
           <div class="mb-3" *ngIf="store.characterIsNew$ | async | not">
             <label for="characterImageInput" class="form-label" translate="characters.properties.sheetImage"></label>
-            <div class="input-group">
-              <input type="file" id="characterImageInput" class="form-control" accept="image/*"
-                     (change)="onSetSheetImage($event)" aria-describedby="characterImageInputHelp"/>
+            <div class="d-flex">
+              <app-cropped-image-input
+                id="characterImageInput"
+                class="flex-grow-1"
+                #sheetImgInput
+                (imageChange)="onSetSheetImage($event)"></app-cropped-image-input>
               <app-two-factor-button
-                *ngIf="store.sheetImage$ | async"
+                *ngIf="(store.sheetImage$ | async) && (sheetImgInput.cropActive | async | not)"
                 (confirmed)="onRemoveSheetImage()"
-                btnClass="btn-danger" data-card-btn="">
+                btnClass="btn-danger" class="ms-2">
                 <i class="bi bi-trash"></i>&nbsp;<span translate="edit.form.characters.sheetImage.remove.btn"></span>
               </app-two-factor-button>
             </div>
@@ -224,7 +227,6 @@
             <app-read-only-field inline
                                  label="characters.properties.combatClass">{{store.combatClass$ | async}}</app-read-only-field>
           </app-card>
-          <ng-container *ngIf="store.sheetImage$ | async" [ngTemplateOutlet]="bioTpl"></ng-container>
           <app-card class="mb-3">
             <h4 data-card-title="" translate="characters.properties.abilities"></h4>
             <span *ngIf="store.abilities$ | async | not"
@@ -261,16 +263,12 @@
           <app-card *ngIf="store.sheetImage$ | async as imgAtt" class="mb-3" hideHeader>
             <app-attachment-img [attachment]="imgAtt" [alt]="store.name$ | async" fitContainer></app-attachment-img>
           </app-card>
-          <ng-container *ngIf="store.sheetImage$ | async | not" [ngTemplateOutlet]="bioTpl"></ng-container>
+          <app-card *ngIf="store.bio$ | async as bio" class="mb-3">
+            <h4 data-card-title="" translate="characters.properties.bio"></h4>
+            <p class="white-space-pre-line">{{bio}}</p>
+          </app-card>
         </div>
       </div>
-
-      <ng-template #bioTpl>
-        <app-card *ngIf="store.bio$ | async as bio" class="mb-3">
-          <h4 data-card-title="" translate="characters.properties.bio"></h4>
-          <p class="white-space-pre-line">{{bio}}</p>
-        </app-card>
-      </ng-template>
     </app-card>
   </ng-template>
 </div>

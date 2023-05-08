@@ -8,6 +8,7 @@
   "components.mainMenu.replicationStatus.tooltip.denied": "Access denied",
   "components.mainMenu.replicationStatus.tooltip.error": "Error: {{reason}}",
   "components.mainMenu.replicationStatus.tooltip.complete": "Stopped",
+  "components.croppedImageInput.labels.cropHeader": "Crop image",
   "settings.labels.combatClassNames": "Combat Classes",
   "settings.labels.speciesNames": "Species",
   "characters.labels.characters": "Characters",

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
+import {mergeMap, Observable} from 'rxjs';
 
 import {Attachment, Character, CharacterListView, SaveAttachmentResponse} from '@db/model';
 
@@ -21,7 +21,9 @@ export class CharacterService extends DatabaseService<Character, CharacterListVi
     }
 
     public setSheetImage(docId: string, docRev: string, content: Blob): Observable<SaveAttachmentResponse> {
-        return this.saveAttachment(docId, docRev, SHEET_IMAGE_NAME, content)
+        return this.deleteSheetImage(docId, docRev)
+            .pipe(mergeMap(res => this
+                .saveAttachment(res._id, res._rev, SHEET_IMAGE_NAME, content)))
     }
 
     public deleteSheetImage(docId: string, docRev: string) {

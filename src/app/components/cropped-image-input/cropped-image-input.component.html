@@ -1,0 +1,24 @@
+<div class="input-field-wrapper input-group" *ngIf="selectedFile | async | not">
+  <input type="file" class="form-control" accept="image/*"
+         (change)="onFileSelected($event)"/>
+</div>
+
+<div class="cropper-wrapper" *ngIf="selectedFile | async as file">
+  <div class="cropper-buttons d-flex">
+    <span translate="components.croppedImageInput.labels.cropHeader"></span>
+    <div class="spacer flex-grow-1"></div>
+    <button type="button" class="btn btn-primary btn-block me-2" (click)="onAcceptCrop()">
+      <i class="bi bi-check"></i>&nbsp;<span translate="components.croppedImageInput.buttons.accept"></span>
+    </button>
+    <button type="button" class="btn btn-outline-danger btn-block" (click)="cancelCrop()">
+      <i class="bi bi-x-lg"></i>&nbsp;<span translate="components.croppedImageInput.buttons.cancel"></span>
+    </button>
+  </div>
+  <image-cropper #cropper
+                 [imageFile]="file"
+                 [autoCrop]="false"
+                 [containWithinAspectRatio]="true"
+                 [format]="asFormat(this.contentTypeOut)"
+                 [aspectRatio]=this.aspectRatio
+  ></image-cropper>
+</div>
